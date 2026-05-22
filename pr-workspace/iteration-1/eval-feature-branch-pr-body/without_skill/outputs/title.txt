@@ -1,0 +1,1 @@
+feat(booking): require explicit session booking before message send [MED-481]

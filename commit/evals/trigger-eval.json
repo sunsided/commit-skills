@@ -1,0 +1,22 @@
+[
+  {"query": "ok i finished the calendar bug fix, theres a half-broken assertion in tests/calendar.spec.ts I rewrote, plus the actual fix in src/calendar/render.ts and a README footnote. can u commit all this", "should_trigger": true},
+  {"query": "write me a commit message for the changes I just made to src/auth/session.ts — i swapped the jwt library from jsonwebtoken to jose and updated the verify path", "should_trigger": true},
+  {"query": "/commit", "should_trigger": true},
+  {"query": "the working tree has like 7 unstaged files all over the place, can you split this into proper commits before i open a PR", "should_trigger": true},
+  {"query": "i need to commit the rust refactor i just did. theres also a Cargo.lock change and an unrelated typo i fixed in CONTRIBUTING.md while i was in there", "should_trigger": true},
+  {"query": "draft commit messages for what i have staged, please follow conventional commits", "should_trigger": true},
+  {"query": "I added migration 0042_user_email_index.sql and the corresponding rollback file. also touched the migration runner to skip already-applied files. ready for a commit", "should_trigger": true},
+  {"query": "before i push these changes to the feat/MED-481-booking branch can u group them into logical commits with proper messages", "should_trigger": true},
+  {"query": "make a commit for the dependency bumps", "should_trigger": true},
+  {"query": "ok i changed src/parser.rs and added the bench in benches/bench_parse.rs. can you write the commit", "should_trigger": true},
+  {"query": "rebase my fix/auth branch onto main and resolve any conflicts", "should_trigger": false},
+  {"query": "what was the last commit that touched src/booking/lock.py? need to find when this regression was introduced", "should_trigger": false},
+  {"query": "revert commit abc123 — it broke prod last night", "should_trigger": false},
+  {"query": "show me the git diff for the staged changes, want to see what's about to go in", "should_trigger": false},
+  {"query": "can you cherry-pick d4f5e2a from main onto my release/v0.4 branch", "should_trigger": false},
+  {"query": "I keep getting conflicts when merging upstream/main into my branch, can you help me resolve them in src/api/handlers.go", "should_trigger": false},
+  {"query": "the pre-commit hook is failing with 'lint failed' but the actual lint output is suppressed somewhere, how do i see what's wrong", "should_trigger": false},
+  {"query": "amend the previous commit to include the file i forgot to stage", "should_trigger": false},
+  {"query": "write a PR description for the changes on my feat/checkout branch — three commits, base main", "should_trigger": false},
+  {"query": "search the commit history for any change that mentions MED-481, i think there are older commits related to this ticket", "should_trigger": false}
+]

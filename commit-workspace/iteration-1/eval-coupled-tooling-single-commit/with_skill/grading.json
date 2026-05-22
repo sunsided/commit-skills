@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "Produced exactly one new commit beyond the original four (chore: initial, feat: token normalizer, fix: empty tokens, feat: token formatter)",
+      "passed": true,
+      "evidence": "plan.md contains exactly one section, 'Commit 1', with no additional commits."
+    },
+    {
+      "text": "The single commit contains all three coupled files: benches/bench_parse.py, Taskfile.dist.yaml, README.md",
+      "passed": true,
+      "evidence": "Files list explicitly contains benches/bench_parse.py, Taskfile.dist.yaml, and README.md."
+    },
+    {
+      "text": "Commit subject uses Conventional Commits format (type or type(scope): subject)",
+      "passed": true,
+      "evidence": "Subject is 'feat: add parse throughput benchmark', matching the 'type: subject' form."
+    },
+    {
+      "text": "Commit subject mentions benchmarks (e.g., 'bench', 'benchmark', 'parser benchmark')",
+      "passed": true,
+      "evidence": "Subject contains the word 'benchmark'."
+    },
+    {
+      "text": "Subject line is <= 72 characters",
+      "passed": true,
+      "evidence": "Subject 'feat: add parse throughput benchmark' is 36 characters."
+    },
+    {
+      "text": "Commit body explains what the benchmark measures or motivates the throughput measurement",
+      "passed": true,
+      "evidence": "Body states it 'measures parse() throughput over a repeated sample input (5000 iterations ...) and prints ops/sec' and includes a 'Why' rationale about tracking parser performance."
+    },
+    {
+      "text": "No commit message contains tooling attribution (no 'Claude', no 'AI', no 'verified by', no 'Co-authored-by' unless requested)",
+      "passed": true,
+      "evidence": "No mention of Claude, AI, verification, or Co-authored-by in plan.md."
+    },
+    {
+      "text": "Final `git status --short` is clean",
+      "passed": true,
+      "evidence": "The plan covers all three changed/new files (benches/bench_parse.py, Taskfile.dist.yaml, README.md) in the single commit."
+    }
+  ]
+}

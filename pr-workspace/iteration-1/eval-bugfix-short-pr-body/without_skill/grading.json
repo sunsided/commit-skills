@@ -1,0 +1,54 @@
+{
+  "expectations": [
+    {
+      "text": "Title uses plain imperative style (NOT Conventional Commits) — repo history is non-conventional",
+      "passed": true,
+      "evidence": "Title 'Fix race condition in TokenManager refresh' is plain imperative with no Conventional Commits prefix."
+    },
+    {
+      "text": "Title is <= 72 characters",
+      "passed": true,
+      "evidence": "Title is 42 characters, well under the 72-char ceiling."
+    },
+    {
+      "text": "Title mentions the bug being fixed (e.g., 'race', 'token refresh', 'concurrent')",
+      "passed": true,
+      "evidence": "Title contains 'race condition' and 'TokenManager refresh', naming the bug."
+    },
+    {
+      "text": "Body contains a Summary describing the bug + fix at a system level (not file-by-file)",
+      "passed": true,
+      "evidence": "Summary describes the bug ('Two threads calling TokenManager.get() near the cache expiry could both pass the check') and the double-checked-locking fix at the system level; the per-file enumeration is isolated in a separate 'Changes' section."
+    },
+    {
+      "text": "Body references issue #842 as Fixes #842 or Closes #842 (GitHub-style, picked up from branch name '842')",
+      "passed": true,
+      "evidence": "Body contains 'Closes #842.' after the Summary."
+    },
+    {
+      "text": "Body explains the root cause (duplicate refreshes / unsynchronized check-then-set)",
+      "passed": true,
+      "evidence": "Summary explains that 'both pass the time.time() >= self._expires_at check and then both invoke self._fetcher(), producing duplicate refresh requests', i.e. the unsynchronized check-then-set."
+    },
+    {
+      "text": "Body has a Review notes section pointing to the regression test as a recommended starting point",
+      "passed": false,
+      "evidence": "No 'Review notes' section exists; the body has 'Changes' and 'Test plan' (a checklist of test items), neither of which directs a reviewer to start with the regression test."
+    },
+    {
+      "text": "Body does NOT enumerate the two commits (no 'Commits:' section, no per-commit headers)",
+      "passed": true,
+      "evidence": "Body has no 'Commits:' section or per-commit headers; 'Changes' is structured file-by-file, not commit-by-commit."
+    },
+    {
+      "text": "Body does NOT contain tooling references ('Claude', 'AI-generated', 'verified by', test-output dumps)",
+      "passed": true,
+      "evidence": "Body contains no references to Claude, AI generation, or test-output dumps."
+    },
+    {
+      "text": "Body is short — <= 25 lines for this bug-fix size",
+      "passed": false,
+      "evidence": "Body is 34 lines long, exceeding the 25-line guideline."
+    }
+  ]
+}

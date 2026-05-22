@@ -1,0 +1,25 @@
+{
+  "skill_name": "pr",
+  "evals": [
+    {
+      "id": 1,
+      "name": "feature-branch-pr-body",
+      "prompt": "First, run `bash /home/mmayer/dev/mine/ai/commit-skills/fixtures/pr/feature-branch.sh /tmp/eval-pr-feature` to set up a feature branch. Then `cd /tmp/eval-pr-feature`. The branch `feat/MED-481-explicit-booking` is three commits ahead of main and adds an explicit session-booking step before message exchange. Draft a pull request title and body suitable for opening against main. Output only the title and body as text—do not run `gh`.",
+      "expected_output": "Title in Conventional Commits style (e.g. `feat(booking): ...`) under 72 chars. Body contains: a Summary section (2-3 sentences on what + why, in product-level language), Why with the MED-481 link, Key changes (bulleted list of load-bearing changes, NOT a per-commit list), Risks section noting the behavior change for missing-session requests, and Review notes telling the reviewer where to start (e.g. start in src/booking/lock.py) and what to scrutinize. Must NOT enumerate the three commits. Must NOT contain phrases like 'written with Claude', 'verified', 'tests pass', or test-output dumps.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "bugfix-short-pr-body",
+      "prompt": "First, run `bash /home/mmayer/dev/mine/ai/commit-skills/fixtures/pr/bugfix.sh /tmp/eval-pr-bugfix` to set up a bug-fix branch. Then `cd /tmp/eval-pr-bugfix`. The branch `fix/842-token-refresh-race` has two commits fixing a race condition in token refresh and adding a regression test. Draft a pull request title and body to open against main. Output only the title and body as text.",
+      "expected_output": "Compact title in plain imperative style (NOT Conventional Commits, since repo history is imperative) like `Fix token refresh race condition` under 72 chars. Body is short (≤15 lines), structured roughly as Summary / Why (with Fixes #842 link picked up from the branch name) / Fix (root cause + change) / Review notes pointing to the regression test as the easiest entry point. Issue link must be `Fixes #842` (GitHub-style). No commit enumeration. No tooling references.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "templated-refactor-pr-body",
+      "prompt": "First, run `bash /home/mmayer/dev/mine/ai/commit-skills/fixtures/pr/templated-repo.sh /tmp/eval-pr-template` to set up a refactor branch with a PR template in the repo. Then `cd /tmp/eval-pr-template`. The branch `refactor/consolidate-retry` has two commits replacing three duplicated retry blocks with a single `with_retry` helper. The repo has `.github/pull_request_template.md` defining specific headings (Description, Type of change, Testing, Reviewer notes, Checklist). Draft a pull request title and body to open against main. Output only title and body as text.",
+      "expected_output": "Plain imperative title (matching repo style) under 72 chars, e.g. `Refactor inline retry loops into a single helper`. Body uses the template's exact headings: Description, Type of change (with 'Refactor (no behavior change)' ticked), Testing, Reviewer notes, Checklist. Description emphasizes behavior is unchanged. Type of change has only the refactor box ticked. Testing notes the existing tests cover the call sites. Reviewer notes guide to src/retry.py first then the call-site migration. Checklist ticks only items that are honestly done (CHANGELOG was updated; no new tests were required). HTML comments from the template should be removed. NO commit list, NO tooling references."
+    }
+  ]
+}

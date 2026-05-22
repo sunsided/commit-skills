@@ -1,0 +1,1 @@
+feat(booking): add explicit session booking step before messaging

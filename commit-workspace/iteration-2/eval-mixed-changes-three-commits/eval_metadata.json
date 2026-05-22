@@ -1,0 +1,17 @@
+{
+  "eval_id": 1,
+  "eval_name": "mixed-changes-three-commits",
+  "prompt": "Repo with unrelated changes (new API endpoint + tests, CI Node bump, README typo). Repo style: plain imperative. Commit them.",
+  "assertions": [
+    {"text": "Produced exactly three new commits beyond the original four (Initial, version helper, bump, version test)", "weight": 1.0},
+    {"text": "Feature commit groups src/users.js + tests/users.test.js + src/index.js wiring together", "weight": 1.0},
+    {"text": "Feature commit subject is plain imperative (not Conventional Commits)", "weight": 1.0},
+    {"text": "CI workflow change (.github/workflows/ci.yml) is its own commit, not bundled with the feature", "weight": 1.0},
+    {"text": "README typo fix is its own commit, not bundled with the feature", "weight": 1.0},
+    {"text": "Each subject line is <= 72 characters", "weight": 0.5},
+    {"text": "Feature commit body explains the new endpoint behavior (before/after, or what it does)", "weight": 1.0},
+    {"text": "No commit message contains tooling attribution (no 'Claude', no 'AI', no 'verified by', no 'Co-authored-by' unless requested)", "weight": 1.0},
+    {"text": "No commit was made with `git add -A` or `git add .` (files staged explicitly)", "weight": 0.5},
+    {"text": "Final `git status --short` is clean (no leftover unstaged changes from the original three groups)", "weight": 0.5}
+  ]
+}

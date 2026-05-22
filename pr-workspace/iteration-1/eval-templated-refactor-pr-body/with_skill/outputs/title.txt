@@ -1,0 +1,1 @@
+Consolidate per-method retry loops into a single with_retry helper

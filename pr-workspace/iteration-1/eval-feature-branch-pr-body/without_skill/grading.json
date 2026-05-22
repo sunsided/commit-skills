@@ -1,0 +1,59 @@
+{
+  "expectations": [
+    {
+      "text": "Title uses Conventional Commits style (e.g., feat(booking): ...) since repo history is conventional",
+      "passed": true,
+      "evidence": "Title begins 'feat(booking): require explicit session booking before message send' — Conventional Commits scoped form."
+    },
+    {
+      "text": "Title is <= 72 characters",
+      "passed": false,
+      "evidence": "Title is 77 characters (including the trailing '[MED-481]' tag), exceeding the 72-character limit."
+    },
+    {
+      "text": "Body has a Summary section (or equivalent lead paragraph) describing what the PR does in product/system-level language, not file-level",
+      "passed": true,
+      "evidence": "'## Summary' describes the behavior change (explicit booking step, preventing double-booking) at the system level without enumerating files."
+    },
+    {
+      "text": "Body has a Why or motivation section explaining the race-condition problem the change addresses",
+      "passed": true,
+      "evidence": "Summary states the old flow 'made it impossible to prevent double-booking of the same slot', and 'Why this shape' explains design choices. The race/double-booking motivation is present."
+    },
+    {
+      "text": "MED-481 issue link appears in the body (e.g., 'Closes MED-481', 'Refs: MED-481', or similar)",
+      "passed": true,
+      "evidence": "'Ticket: MED-481' appears in the Summary section."
+    },
+    {
+      "text": "Body contains a bulleted list of key changes (load-bearing changes, not file-by-file)",
+      "passed": false,
+      "evidence": "The 'Changes' section is explicitly organized file-by-file (bullets headed 'New src/booking/lock.py', 'New src/booking/service.py', 'src/messages.py', 'Test') — the notes even confirm 'Changes is grouped by file/module and matches the three commits one-to-one'."
+    },
+    {
+      "text": "Body acknowledges the behavioral change for missing-session requests (409 / breaking change risk)",
+      "passed": true,
+      "evidence": "Changes bullet for messages.py: 'returns {\"error\": \"no_session\", \"status\": 409} when the caller did not book first. The legacy send (implicit-create) is kept untouched for backwards compatibility.'"
+    },
+    {
+      "text": "Body has a Review notes / review-instructions section telling reviewers where to start (file path) and what to scrutinize",
+      "passed": false,
+      "evidence": "No 'Review notes' / 'Where to start' section exists. The body has Summary, Changes, Why this shape, Test plan, and Follow-ups — none direct reviewers to a starting file or what to scrutinize."
+    },
+    {
+      "text": "Body does NOT enumerate the individual commits (no 'Commits:' list, no per-commit headers, no commit hashes)",
+      "passed": true,
+      "evidence": "Body contains no commit hashes, no 'Commits:' list, and no per-commit headers (despite notes mentioning the file groupings mirror commits, the body itself does not enumerate them)."
+    },
+    {
+      "text": "Body does NOT contain tooling references ('Claude', 'AI-written', 'verified by running tests', test-output dumps, etc.)",
+      "passed": true,
+      "evidence": "No tooling mentions. Test plan lists pytest invocations as plan items (not output dumps), which is standard PR checklist content."
+    },
+    {
+      "text": "Body length is between 15 and 60 lines (sensible feature-PR size)",
+      "passed": true,
+      "evidence": "Body is 55 lines, within the 15-60 line range."
+    }
+  ]
+}

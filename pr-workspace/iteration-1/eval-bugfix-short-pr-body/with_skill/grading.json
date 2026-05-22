@@ -1,0 +1,54 @@
+{
+  "expectations": [
+    {
+      "text": "Title uses plain imperative style (NOT Conventional Commits) — repo history is non-conventional",
+      "passed": true,
+      "evidence": "Title 'Fix race in TokenManager that allowed duplicate refreshes' starts with imperative verb 'Fix' and uses no Conventional Commits prefix like 'fix:'."
+    },
+    {
+      "text": "Title is <= 72 characters",
+      "passed": true,
+      "evidence": "Title is 57 characters, well under the 72-char ceiling."
+    },
+    {
+      "text": "Title mentions the bug being fixed (e.g., 'race', 'token refresh', 'concurrent')",
+      "passed": true,
+      "evidence": "Title contains 'race' and 'duplicate refreshes', naming the concurrency bug directly."
+    },
+    {
+      "text": "Body contains a Summary describing the bug + fix at a system level (not file-by-file)",
+      "passed": true,
+      "evidence": "Summary describes the system-level symptom ('TokenManager.get() could call the upstream token fetcher multiple times') without enumerating files."
+    },
+    {
+      "text": "Body references issue #842 as Fixes #842 or Closes #842 (GitHub-style, picked up from branch name '842')",
+      "passed": true,
+      "evidence": "Body contains 'Fixes #842.' at the end of the Why section."
+    },
+    {
+      "text": "Body explains the root cause (duplicate refreshes / unsynchronized check-then-set)",
+      "passed": true,
+      "evidence": "Why section: 'self._lock was constructed but never acquired, so the expiry check and the refresh were not serialized', explicitly naming the unsynchronized check-then-set root cause."
+    },
+    {
+      "text": "Body has a Review notes section pointing to the regression test as a recommended starting point",
+      "passed": true,
+      "evidence": "Section '## Review notes' opens with 'Read the regression test in `tests/test_token.py` first' as the recommended entry point."
+    },
+    {
+      "text": "Body does NOT enumerate the two commits (no 'Commits:' section, no per-commit headers)",
+      "passed": true,
+      "evidence": "No 'Commits:' heading or per-commit bullets; structure is Summary / Why / Fix / Review notes."
+    },
+    {
+      "text": "Body does NOT contain tooling references ('Claude', 'AI-generated', 'verified by', test-output dumps)",
+      "passed": true,
+      "evidence": "Body contains no mentions of Claude, AI, generation tools, or test-output dumps."
+    },
+    {
+      "text": "Body is short — <= 25 lines for this bug-fix size",
+      "passed": false,
+      "evidence": "Body is 33 lines long, exceeding the 25-line guideline; the author's own notes flag it at ~22 lines but the file is longer."
+    }
+  ]
+}

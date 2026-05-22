@@ -1,0 +1,17 @@
+{
+  "eval_id": 2,
+  "eval_name": "bugfix-short-pr-body",
+  "prompt": "Two-commit bug-fix branch fix/842-token-refresh-race against main. Repo history uses plain imperative subjects. Draft a PR title + body.",
+  "assertions": [
+    {"text": "Title uses plain imperative style (NOT Conventional Commits) — repo history is non-conventional", "weight": 1.0},
+    {"text": "Title is <= 72 characters", "weight": 0.5},
+    {"text": "Title mentions the bug being fixed (e.g., 'race', 'token refresh', 'concurrent')", "weight": 0.5},
+    {"text": "Body contains a Summary describing the bug + fix at a system level (not file-by-file)", "weight": 1.0},
+    {"text": "Body references issue #842 as Fixes #842 or Closes #842 (GitHub-style, picked up from branch name '842')", "weight": 1.0},
+    {"text": "Body explains the root cause (duplicate refreshes / unsynchronized check-then-set)", "weight": 1.0},
+    {"text": "Body has a Review notes section pointing to the regression test as a recommended starting point", "weight": 1.0},
+    {"text": "Body does NOT enumerate the two commits (no 'Commits:' section, no per-commit headers)", "weight": 1.0},
+    {"text": "Body does NOT contain tooling references ('Claude', 'AI-generated', 'verified by', test-output dumps)", "weight": 1.0},
+    {"text": "Body is short — <= 25 lines for this bug-fix size", "weight": 0.5}
+  ]
+}

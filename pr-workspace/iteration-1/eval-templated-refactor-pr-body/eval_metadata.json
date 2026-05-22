@@ -1,0 +1,18 @@
+{
+  "eval_id": 3,
+  "eval_name": "templated-refactor-pr-body",
+  "prompt": "Two-commit refactor branch refactor/consolidate-retry. Repo has .github/pull_request_template.md with five headings (Description, Type of change, Testing, Reviewer notes, Checklist). Draft a PR title + body.",
+  "assertions": [
+    {"text": "Title uses plain imperative style (matching repo history, which is not Conventional Commits)", "weight": 1.0},
+    {"text": "Title is <= 72 characters", "weight": 0.5},
+    {"text": "Body uses the template's exact five headings in order: Description, Type of change, Testing, Reviewer notes, Checklist", "weight": 1.0},
+    {"text": "Description section emphasizes that behavior is unchanged (the refactor's defining property)", "weight": 1.0},
+    {"text": "Type of change has the 'Refactor (no behavior change)' box ticked, and ONLY that one", "weight": 1.0},
+    {"text": "Reviewer notes guide a reviewer to src/retry.py first (the new helper), then the call-site migration in src/client.py", "weight": 1.0},
+    {"text": "Checklist boxes are ticked honestly — no false claims (e.g. 'tests added' should NOT be ticked since none were)", "weight": 1.0},
+    {"text": "HTML comments from the template (<!-- ... -->) have been removed or addressed", "weight": 0.5},
+    {"text": "Body does NOT enumerate the two commits (no 'Commits:' section)", "weight": 1.0},
+    {"text": "Body does NOT contain tooling references ('Claude', 'AI', 'verified by', test-output dumps)", "weight": 1.0},
+    {"text": "Body does not invent top-level headings not in the template (e.g. 'Risks', 'Why now') — those go inside Description if needed", "weight": 0.5}
+  ]
+}

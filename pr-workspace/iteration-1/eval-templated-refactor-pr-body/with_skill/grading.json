@@ -1,0 +1,59 @@
+{
+  "expectations": [
+    {
+      "text": "Title uses plain imperative style (matching repo history, which is not Conventional Commits)",
+      "passed": true,
+      "evidence": "Title is 'Consolidate per-method retry loops into a single with_retry helper' — plain imperative, no Conventional Commits or 'Refactor:' prefix, matching repo titles like 'Add placeholder client test' / 'Replace inline retry loops with with_retry'."
+    },
+    {
+      "text": "Title is <= 72 characters",
+      "passed": true,
+      "evidence": "Title is 65 characters long, well under the 72-char ceiling."
+    },
+    {
+      "text": "Body uses the template's exact five headings in order: Description, Type of change, Testing, Reviewer notes, Checklist",
+      "passed": true,
+      "evidence": "Body contains exactly '## Description', '## Type of change', '## Testing', '## Reviewer notes', '## Checklist' in that order."
+    },
+    {
+      "text": "Description section emphasizes that behavior is unchanged (the refactor's defining property)",
+      "passed": true,
+      "evidence": "Description explicitly states 'No behavior change: the new helper preserves the existing 3-attempt limit, 0.5s base backoff with exponential growth, and RequestException catch.'"
+    },
+    {
+      "text": "Type of change has the 'Refactor (no behavior change)' box ticked, and ONLY that one",
+      "passed": true,
+      "evidence": "Only '[x] Refactor (no behavior change)' is ticked; the other four ('Bug fix', 'New feature', 'Documentation', 'CI / tooling') remain '[ ]'."
+    },
+    {
+      "text": "Reviewer notes guide a reviewer to src/retry.py first (the new helper), then the call-site migration in src/client.py",
+      "passed": true,
+      "evidence": "Reviewer notes opens with 'Start in `src/retry.py` — the `with_retry` helper is the only new logic in the PR' then directs to 'src/client.py to confirm the three call sites now delegate to it'."
+    },
+    {
+      "text": "Checklist boxes are ticked honestly — no false claims (e.g. 'tests added' should NOT be ticked since none were)",
+      "passed": true,
+      "evidence": "All three checklist boxes are left as '[ ]' unticked, including 'Tests updated or added where appropriate' — honest, as no tests were added."
+    },
+    {
+      "text": "HTML comments from the template (<!-- ... -->) have been removed or addressed",
+      "passed": true,
+      "evidence": "No '<!--' or '-->' substrings appear in the body; every template placeholder comment was replaced with actual content under its heading."
+    },
+    {
+      "text": "Body does NOT enumerate the two commits (no 'Commits:' section)",
+      "passed": true,
+      "evidence": "No 'Commits:' heading or per-commit enumeration appears anywhere in the body."
+    },
+    {
+      "text": "Body does NOT contain tooling references ('Claude', 'AI', 'verified by', test-output dumps)",
+      "passed": true,
+      "evidence": "No mentions of Claude, AI, 'verified by', or pasted test output appear in the body."
+    },
+    {
+      "text": "Body does not invent top-level headings not in the template (e.g. 'Risks', 'Why now') — those go inside Description if needed",
+      "passed": true,
+      "evidence": "Only the five template headings appear at '##' level — no extra top-level sections like Risks or Why now."
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "expectations": [
+    {"text": "Produced exactly two new commits beyond the three original ticket-prefixed commits", "passed": true, "evidence": "Plan defines Commit 1 (bug fix) and Commit 2 (serde bump), exactly two new commits."},
+    {"text": "Bug-fix commit groups src/reader.rs + tests/reader.rs together (one commit, not two)", "passed": true, "evidence": "Commit 1 Files list contains both 'src/reader.rs' and 'tests/reader.rs'."},
+    {"text": "Dep-bump commit (Cargo.toml) is separate from the bug-fix commit", "passed": true, "evidence": "Commit 2 isolates Cargo.toml from the bug-fix commit."},
+    {"text": "Bug-fix commit subject uses ticket-prefixed style matching history (e.g. 'MED-842: ...')", "passed": true, "evidence": "Subject: 'MED-842: Read full buffer across chunk boundaries' matches the established MED-XXX: style."},
+    {"text": "Bug-fix commit explicitly references MED-842 (either in subject prefix or as a Refs:/Closes:/Fixes: footer)", "passed": true, "evidence": "MED-842 is in the subject prefix and a 'Refs MED-842' trailer is included."},
+    {"text": "Bug-fix commit body explains before/after behavior (truncated reads → full accumulation, or equivalent)", "passed": true, "evidence": "Body describes prior truncated output behavior and the new accumulation via 1024-byte cursor advance until buffer exhausted."},
+    {"text": "Dep-bump commit subject is reasonable (does NOT reference MED-842, since the bump is unrelated)", "passed": true, "evidence": "Commit 2 subject 'Bump serde to 1.0.197' contains no MED-842 reference."},
+    {"text": "Each subject line is <= 72 characters", "passed": true, "evidence": "Commit 1 subject is 49 chars, Commit 2 subject is 21 chars."},
+    {"text": "No commit message contains tooling attribution (no 'Claude', no 'AI', no 'verified by')", "passed": true, "evidence": "No tooling attribution appears anywhere in plan.md."},
+    {"text": "Final `git status --short` is clean", "passed": true, "evidence": "All three changed files (src/reader.rs, tests/reader.rs, Cargo.toml) are accounted for across the two commits."}
+  ]
+}

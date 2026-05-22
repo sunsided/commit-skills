@@ -1,0 +1,22 @@
+[
+  {"query": "open a PR for my feat/MED-481-booking branch against main please", "should_trigger": true},
+  {"query": "can you write me a PR description for the 4 commits I have on this branch? base is develop", "should_trigger": true},
+  {"query": "/pr", "should_trigger": true},
+  {"query": "i'm about to push my refactor branch and i hate writing PR bodies. can you draft one — its just the with_retry helper consolidation, nothing exciting", "should_trigger": true},
+  {"query": "draft a pull request title and body for the changes between origin/main and HEAD, the repo has a .github/pull_request_template.md", "should_trigger": true},
+  {"query": "ready to open a pr, branch is bugfix/842-token-refresh-race, ill let you decide the title", "should_trigger": true},
+  {"query": "write the PR description for the work on feat/explicit-booking. include review instructions because some of the locking logic is subtle", "should_trigger": true},
+  {"query": "gh pr create with a sensible body for this branch please", "should_trigger": true},
+  {"query": "make a pull request for me, dont forget to link MED-481", "should_trigger": true},
+  {"query": "i need a PR summary that doesnt list every commit, more focused on what the reviewer should look at first", "should_trigger": true},
+  {"query": "review this PR, https://github.com/foo/bar/pull/42 — is it safe to merge", "should_trigger": false},
+  {"query": "list all open PRs assigned to me in the foo/bar repo", "should_trigger": false},
+  {"query": "the CI on PR #842 is failing on the linter stage, can you see whats wrong", "should_trigger": false},
+  {"query": "merge PR 481 into main, squash the commits", "should_trigger": false},
+  {"query": "rebase my branch onto main before i open a PR", "should_trigger": false},
+  {"query": "comment on PR 19 saying the test coverage looks insufficient for the auth flow", "should_trigger": false},
+  {"query": "write me a commit message for what i have staged", "should_trigger": false},
+  {"query": "find the PR that introduced the bug in src/calendar/render.ts:142, i need to know which release it landed in", "should_trigger": false},
+  {"query": "close PR 314 with a comment that we are not going to take it", "should_trigger": false},
+  {"query": "what is the pr template in this repo — i want to see the structure before drafting one manually", "should_trigger": false}
+]

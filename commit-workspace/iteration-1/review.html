@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eval Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #faf9f5;
+      --surface: #ffffff;
+      --border: #e8e6dc;
+      --text: #141413;
+      --text-muted: #b0aea5;
+      --accent: #d97757;
+      --accent-hover: #c4613f;
+      --green: #788c5d;
+      --green-bg: #eef2e8;
+      --red: #c44;
+      --red-bg: #fceaea;
+      --header-bg: #141413;
+      --header-text: #faf9f5;
+      --radius: 6px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---- Header ---- */
+    .header {
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .header .instructions {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-top: 0.25rem;
+    }
+    .header .progress {
+      font-size: 0.875rem;
+      opacity: 0.8;
+      text-align: right;
+    }
+
+    /* ---- Main content ---- */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* ---- Sections ---- */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      flex-shrink: 0;
+    }
+    .section-header {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .section-body {
+      padding: 1rem;
+    }
+
+    /* ---- Config badge ---- */
+    .config-badge {
+      display: inline-block;
+      padding: 0.2rem 0.625rem;
+      border-radius: 9999px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-left: 0.75rem;
+      vertical-align: middle;
+    }
+    .config-badge.config-primary {
+      background: rgba(33, 150, 243, 0.12);
+      color: #1976d2;
+    }
+    .config-badge.config-baseline {
+      background: rgba(255, 193, 7, 0.15);
+      color: #f57f17;
+    }
+
+    /* ---- Prompt ---- */
+    .prompt-text {
+      white-space: pre-wrap;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    /* ---- Outputs ---- */
+    .output-file {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .output-file + .output-file {
+      margin-top: 1rem;
+    }
+    .output-file-header {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .output-file-header .dl-btn {
+      font-size: 0.7rem;
+      color: var(--accent);
+      text-decoration: none;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+    .output-file-header .dl-btn:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+    .output-file-content {
+      padding: 0.75rem;
+      overflow-x: auto;
+    }
+    .output-file-content pre {
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+    .output-file-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .output-file-content iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+    }
+    .output-file-content table {
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+      width: 100%;
+    }
+    .output-file-content table td,
+    .output-file-content table th {
+      border: 1px solid var(--border);
+      padding: 0.375rem 0.5rem;
+      text-align: left;
+    }
+    .output-file-content table th {
+      background: var(--bg);
+      font-weight: 600;
+    }
+    .output-file-content .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+    .output-file-content .download-link:hover {
+      background: var(--border);
+    }
+    .empty-state {
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    /* ---- Feedback ---- */
+    .prev-feedback {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.625rem 0.75rem;
+      margin-top: 0.75rem;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .prev-feedback-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.25rem;
+      color: var(--text-muted);
+    }
+    .feedback-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      resize: vertical;
+      color: var(--text);
+    }
+    .feedback-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .feedback-status {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      min-height: 1.1em;
+    }
+
+    /* ---- Grades (collapsible) ---- */
+    .grades-toggle {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .grades-toggle:hover {
+      color: var(--accent);
+    }
+    .grades-toggle .arrow {
+      margin-right: 0.5rem;
+      transition: transform 0.15s;
+      font-size: 0.75rem;
+    }
+    .grades-toggle .arrow.open {
+      transform: rotate(90deg);
+    }
+    .grades-content {
+      display: none;
+      margin-top: 0.75rem;
+    }
+    .grades-content.open {
+      display: block;
+    }
+    .grades-summary {
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .grade-badge {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .grade-pass { background: var(--green-bg); color: var(--green); }
+    .grade-fail { background: var(--red-bg); color: var(--red); }
+    .assertion-list {
+      list-style: none;
+    }
+    .assertion-item {
+      padding: 0.625rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8125rem;
+    }
+    .assertion-item:last-child { border-bottom: none; }
+    .assertion-status {
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    .assertion-status.pass { color: var(--green); }
+    .assertion-status.fail { color: var(--red); }
+    .assertion-evidence {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      padding-left: 1.5rem;
+    }
+
+    /* ---- View tabs ---- */
+    .view-tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 2rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .view-tab {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.625rem 1.25rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .view-tab:hover { color: var(--text); }
+    .view-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .view-panel { display: none; }
+    .view-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+    /* ---- Benchmark view ---- */
+    .benchmark-view {
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .benchmark-table {
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.8125rem;
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+    .benchmark-table th, .benchmark-table td {
+      padding: 0.625rem 0.75rem;
+      text-align: left;
+      border: 1px solid var(--border);
+    }
+    .benchmark-table th {
+      font-family: 'Poppins', sans-serif;
+      background: var(--header-bg);
+      color: var(--header-text);
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .benchmark-table tr:hover { background: var(--bg); }
+    .benchmark-table tr.benchmark-row-with { background: rgba(33, 150, 243, 0.06); }
+    .benchmark-table tr.benchmark-row-without { background: rgba(255, 193, 7, 0.06); }
+    .benchmark-table tr.benchmark-row-with:hover { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-without:hover { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-table tr.benchmark-row-avg { font-weight: 600; border-top: 2px solid var(--border); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-with { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-without { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-delta-positive { color: var(--green); font-weight: 600; }
+    .benchmark-delta-negative { color: var(--red); font-weight: 600; }
+    .benchmark-notes {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+    .benchmark-notes h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+    }
+    .benchmark-notes ul {
+      list-style: disc;
+      padding-left: 1.25rem;
+    }
+    .benchmark-notes li {
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      margin-bottom: 0.375rem;
+    }
+    .benchmark-empty {
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+      padding: 3rem;
+    }
+
+    /* ---- Navigation ---- */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+    .nav-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: all 0.15s;
+    }
+    .nav-btn:hover:not(:disabled) {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .done-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+    .done-btn:hover {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .done-btn.ready {
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+    }
+    .done-btn.ready:hover {
+      background: var(--accent-hover);
+    }
+    /* ---- Done overlay ---- */
+    .done-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    .done-overlay.visible {
+      display: flex;
+    }
+    .done-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 2rem 3rem;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+    }
+    .done-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .done-card p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .done-card .btn-row {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    .done-card button {
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    .done-card button:hover {
+      background: var(--bg);
+    }
+    /* ---- Toast ---- */
+    .toast {
+      position: fixed;
+      bottom: 5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 0.625rem 1.25rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 200;
+    }
+    .toast.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" style="height:100vh; display:flex; flex-direction:column;">
+    <div class="header">
+      <div>
+        <h1>Eval Review: <span id="skill-name"></span></h1>
+        <div class="instructions">Review each output and leave feedback below. Navigate with arrow keys or buttons. When done, copy feedback and paste into Claude Code.</div>
+      </div>
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- View tabs (only shown when benchmark data exists) -->
+    <div class="view-tabs" id="view-tabs" style="display:none;">
+      <button class="view-tab active" onclick="switchView('outputs')">Outputs</button>
+      <button class="view-tab" onclick="switchView('benchmark')">Benchmark</button>
+    </div>
+
+    <!-- Outputs panel (qualitative review) -->
+    <div class="view-panel active" id="panel-outputs">
+    <div class="main">
+      <!-- Prompt -->
+      <div class="section">
+        <div class="section-header">Prompt <span class="config-badge" id="config-badge" style="display:none;"></span></div>
+        <div class="section-body">
+          <div class="prompt-text" id="prompt-text"></div>
+        </div>
+      </div>
+
+      <!-- Outputs -->
+      <div class="section">
+        <div class="section-header">Output</div>
+        <div class="section-body" id="outputs-body">
+          <div class="empty-state">No output files found</div>
+        </div>
+      </div>
+
+      <!-- Previous Output (collapsible) -->
+      <div class="section" id="prev-outputs-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="togglePrevOutputs()">
+            <span class="arrow" id="prev-outputs-arrow">&#9654;</span>
+            Previous Output
+          </div>
+        </div>
+        <div class="grades-content" id="prev-outputs-content"></div>
+      </div>
+
+      <!-- Grades (collapsible) -->
+      <div class="section" id="grades-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="toggleGrades()">
+            <span class="arrow" id="grades-arrow">&#9654;</span>
+            Formal Grades
+          </div>
+        </div>
+        <div class="grades-content" id="grades-content"></div>
+      </div>
+
+      <!-- Feedback -->
+      <div class="section">
+        <div class="section-header">Your Feedback</div>
+        <div class="section-body">
+          <textarea
+            class="feedback-textarea"
+            id="feedback"
+            placeholder="What do you think of this output? Any issues, suggestions, or things that look great?"
+          ></textarea>
+          <div class="feedback-status" id="feedback-status"></div>
+          <div class="prev-feedback" id="prev-feedback" style="display:none;">
+            <div class="prev-feedback-label">Previous feedback</div>
+            <div id="prev-feedback-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav" id="outputs-nav">
+      <button class="nav-btn" id="prev-btn" onclick="navigate(-1)">&#8592; Previous</button>
+      <button class="done-btn" id="done-btn" onclick="showDoneDialog()">Submit All Reviews</button>
+      <button class="nav-btn" id="next-btn" onclick="navigate(1)">Next &#8594;</button>
+    </div>
+    </div><!-- end panel-outputs -->
+
+    <!-- Benchmark panel (quantitative stats) -->
+    <div class="view-panel" id="panel-benchmark">
+      <div class="benchmark-view" id="benchmark-content">
+        <div class="benchmark-empty">No benchmark data available. Run a benchmark to see quantitative results here.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Done overlay -->
+  <div class="done-overlay" id="done-overlay">
+    <div class="done-card">
+      <h2>Review Complete</h2>
+      <p>Your feedback has been saved. Go back to your Claude Code session and tell Claude you're done reviewing.</p>
+      <div class="btn-row">
+        <button onclick="closeDoneDialog()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ---- Embedded data (injected by generate_review.py) ----
+    const EMBEDDED_DATA = {"skill_name": "commit", "runs": [{"id": "eval-mixed-changes-three-commits-with_skill", "prompt": "Repo with unrelated changes (new API endpoint + tests, CI Node bump, README typo). Repo style: plain imperative. Commit them.", "eval_id": 1, "outputs": [{"name": "notes.md", "type": "text", "content": "# Notes\n\n## Style detected\nPlain imperative. All four existing subjects (\"Add version test\", \"Bump\nversion to 0.1.1\", \"Add version helper\", \"Initial commit\") are capitalized\nverbs with no type/scope prefix. No CONTRIBUTING, .gitmessage, or\ncommitlint config in the repo. Followed plain imperative; did not impose\nConventional Commits.\n\n## Grouping\nThree commits, one per intent (matches the \"feature + tooling + drive-by\"\nscenario in references/splitting.md):\n\n1. `src/users.js` + `tests/users.test.js` + `src/index.js` \u2014 the new\n   endpoint, its route wiring, and its test. The index.js hunk only exists\n   because users.js exists; the test exists because the handler exists.\n   One reason to revert.\n2. `.github/workflows/ci.yml` \u2014 Node 18 -> 20 bump. Independently\n   revertable; would have happened regardless of the users endpoint.\n3. `README.md` \u2014 \"Devolopment\" -> \"Development\" typo. Drive-by; unrelated\n   to either of the above.\n\n## Issue links\nBranch is `main`, no `[A-Z]+-\\d+` or `#\\d+` token. No TODO/FIXME refs in\nthe diff. No prior commits on a feature branch to inherit from. No ticket\ncontext from the user. Skipped issue links; per references/issue-links.md\nfabricating a placeholder is worse than omitting.\n\n## Body verbosity\n- Commit 1: rich body \u2014 behavior change, reviewer would want the routing\n  detail and the in-memory-store caveat.\n- Commit 2: one-sentence lean body \u2014 the \"why\" (Node 18 EOL) is not\n  visible in the diff.\n- Commit 3: minimal, subject only \u2014 pure typo fix, fits the trivial\n  template.\n\n## Ambiguity\nNone significant. The only judgment call was whether the README typo\nwarranted a body; per the minimal template, typo fixes do not.\n"}, {"name": "plan.md", "type": "text", "content": "## Commit 1\n**Subject:** Add user lookup endpoint\n**Files:** src/users.js, tests/users.test.js, src/index.js\n**Body:**\nBefore:\n- The HTTP server only routed `GET /health`; any other path returned 404.\n- There was no user store or per-user lookup path.\n\nAfter:\n- New `src/users.js` exposes `handleGetUser`, backed by an in-memory `Map`.\n  Returns the JSON-encoded user on hit and 404 on miss. A `_seed` helper is\n  exported for tests to populate the store.\n- `src/index.js` matches `GET /users/:id` via a regex on `req.url` and\n  dispatches to `handleGetUser` before falling through to the existing 404.\n- `tests/users.test.js` covers both the hit (returns the seeded user as\n  JSON) and miss (404) paths.\n\nWhy:\n- First endpoint beyond `/health`; gives the service something to actually\n  serve and establishes the pattern for future resource routes.\n\nFindings:\n- The route is parsed inline with a regex rather than introducing a router\n  dependency, matching the existing minimal `http.createServer` style.\n- The user store is an in-memory `Map`, which is fine for the example but\n  means state is lost on restart and not shared across processes.\n\n## Commit 2\n**Subject:** Bump CI Node version to 20\n**Files:** .github/workflows/ci.yml\n**Body:**\nNode 18 reached end-of-life; move CI onto the current active LTS so we are\nnot testing against an unsupported runtime.\n\n## Commit 3\n**Subject:** Fix typo in README development heading\n**Files:** README.md\n**Body:**\n"}], "grading": {"expectations": [{"text": "Produced exactly three new commits beyond the original four (Initial, version helper, bump, version test)", "passed": true, "evidence": "Plan contains exactly three sections: Commit 1 (user endpoint), Commit 2 (CI bump), Commit 3 (README typo)."}, {"text": "Feature commit groups src/users.js + tests/users.test.js + src/index.js wiring together", "passed": true, "evidence": "Commit 1 Files line: 'src/users.js, tests/users.test.js, src/index.js'."}, {"text": "Feature commit subject is plain imperative (not Conventional Commits)", "passed": true, "evidence": "'Add user lookup endpoint' \u2014 capitalized imperative verb, no type/scope prefix; notes.md explicitly declines Conventional Commits."}, {"text": "CI workflow change (.github/workflows/ci.yml) is its own commit, not bundled with the feature", "passed": true, "evidence": "Commit 2 Files line: '.github/workflows/ci.yml' only."}, {"text": "README typo fix is its own commit, not bundled with the feature", "passed": true, "evidence": "Commit 3 Files line: 'README.md' only."}, {"text": "Each subject line is <= 72 characters", "passed": true, "evidence": "Lengths measured: 24, 26, 38 characters \u2014 all <= 72."}, {"text": "Feature commit body explains the new endpoint behavior (before/after, or what it does)", "passed": true, "evidence": "Body has explicit 'Before:' and 'After:' sections describing routing and 404 behavior."}, {"text": "No commit message contains tooling attribution (no 'Claude', no 'AI', no 'verified by', no 'Co-authored-by' unless requested)", "passed": true, "evidence": "No such strings appear in plan.md."}, {"text": "No commit was made with `git add -A` or `git add .` (files staged explicitly)", "passed": true, "evidence": "Each commit has an explicit Files: list naming individual paths, implying per-file staging."}, {"text": "Final `git status --short` is clean (no leftover unstaged changes from the original three groups)", "passed": true, "evidence": "All three change groups (users feature, ci.yml, README.md) are covered across the three commits with explicit file lists; no files left unassigned."}]}}, {"id": "eval-mixed-changes-three-commits-without_skill", "prompt": "Repo with unrelated changes (new API endpoint + tests, CI Node bump, README typo). Repo style: plain imperative. Commit them.", "eval_id": 1, "outputs": [{"name": "notes.md", "type": "text", "content": "# Grouping notes\n\nThree commits, one per logical change, matching the three unrelated\nconcerns described in the task.\n\n## Commit 1 \u2014 users endpoint\n- `src/users.js` (new): defines `handleGetUser` and the in-memory store.\n- `tests/users.test.js` (new): exercises both branches of that handler.\n- `src/index.js` (modified): adds the `/users/:id` route that dispatches\n  to `handleGetUser`. Grouped with the endpoint because the handler is\n  unreachable without this routing edit \u2014 splitting them would leave\n  one commit with dead code and another that won't compile against\n  the prior tree.\n\n## Commit 2 \u2014 CI Node bump\n- `.github/workflows/ci.yml` only. Pure infra change, isolated from\n  source and docs.\n\n## Commit 3 \u2014 README typo\n- `README.md` only. Docs-only fix, kept separate so it can be reverted\n  or cherry-picked independently.\n\n## Ambiguities\n- Could not run `git status` / `git diff` in this sandbox (git\n  commands were denied), so the exact diff hunks weren't inspected;\n  grouping relies on the task description plus file contents. If\n  `src/index.js` also contains an unrelated edit, it would need to be\n  split out.\n- README typo location not verified against HEAD; subject kept generic.\n"}, {"name": "plan.md", "type": "text", "content": "## Commit 1\n**Subject:** Add GET /users/:id endpoint\n**Files:** src/users.js, src/index.js, tests/users.test.js\n**Body:**\nIntroduce a users module with an in-memory store and a handler that\nreturns the user as JSON or 404 when missing. Wire the handler into\nthe HTTP server in src/index.js so requests matching /users/:id are\nrouted to it, and add unit tests covering the found and missing\ncases.\n\n## Commit 2\n**Subject:** Bump CI Node version to 20\n**Files:** .github/workflows/ci.yml\n**Body:**\nUpdate the setup-node step in the ci workflow to use Node 20 so the\ntest job runs on a currently supported LTS release.\n\n## Commit 3\n**Subject:** Fix typo in README\n**Files:** README.md\n**Body:**\nCorrect a typo in the README. Documentation only; no behaviour\nchange.\n"}], "grading": {"expectations": [{"text": "Produced exactly three new commits beyond the original four (Initial, version helper, bump, version test)", "passed": true, "evidence": "Plan contains exactly three sections: Commit 1 (users endpoint), Commit 2 (CI Node bump), Commit 3 (README typo)."}, {"text": "Feature commit groups src/users.js + tests/users.test.js + src/index.js wiring together", "passed": true, "evidence": "Commit 1 Files line: 'src/users.js, src/index.js, tests/users.test.js'."}, {"text": "Feature commit subject is plain imperative (not Conventional Commits)", "passed": true, "evidence": "'Add GET /users/:id endpoint' \u2014 imperative verb, no Conventional Commits 'feat:'/'fix:' prefix."}, {"text": "CI workflow change (.github/workflows/ci.yml) is its own commit, not bundled with the feature", "passed": true, "evidence": "Commit 2 Files line: '.github/workflows/ci.yml' only."}, {"text": "README typo fix is its own commit, not bundled with the feature", "passed": true, "evidence": "Commit 3 Files line: 'README.md' only."}, {"text": "Each subject line is <= 72 characters", "passed": true, "evidence": "Lengths measured: 27, 26, 18 characters \u2014 all <= 72."}, {"text": "Feature commit body explains the new endpoint behavior (before/after, or what it does)", "passed": true, "evidence": "Body describes the handler returning JSON or 404, wiring into the HTTP server, and tests covering found/missing cases."}, {"text": "No commit message contains tooling attribution (no 'Claude', no 'AI', no 'verified by', no 'Co-authored-by' unless requested)", "passed": true, "evidence": "No such strings appear in plan.md."}, {"text": "No commit was made with `git add -A` or `git add .` (files staged explicitly)", "passed": true, "evidence": "Each commit has an explicit Files: list naming individual paths, implying per-file staging."}, {"text": "Final `git status --short` is clean (no leftover unstaged changes from the original three groups)", "passed": true, "evidence": "All three change groups (users feature, ci.yml, README.md) are covered across the three commits with explicit file lists; no files left unassigned."}]}}, {"id": "eval-coupled-tooling-single-commit-with_skill", "prompt": "Working tree has a new benchmark + a Taskfile target that runs it + a README section documenting how. Repo style: Conventional Commits. Commit them.", "eval_id": 2, "outputs": [{"name": "notes.md", "type": "text", "content": "# Notes\n\n## Style detected\nConventional Commits, no scope. History (4 commits):\n- `chore: initial commit`\n- `feat: add token normalizer`\n- `fix: drop empty tokens from parse output`\n- `feat: add token formatter`\nNo CONTRIBUTING.md or commitlint config; observed history is consistent\nenough to pick CC unambiguously. Chose `feat:` over `chore:`/`test:`\nbecause the dominant additive pattern in history uses `feat:` and the\nbenchmark adds a new (dev-facing) capability rather than a chore tweak.\n\n## Grouping reasoning\nTextbook coupled change per references/splitting.md \"Working tree\ncontains a refactor and its enabling tooling\": benchmark script,\nTaskfile target running it, and README documenting it were added in\none session and only exist because of each other.\n- Reverting any one in isolation would leave a dangling reference\n  (Taskfile points at the script; README points at both).\n- \"One reason to revert\" test: the single reason is \"add a parse\n  benchmark\"; splitting would create broken intermediates (a Taskfile\n  target whose script does not exist; a README pointing at nothing).\n=> One commit.\n\n## Issue links\nNone. Branch is `main`; no ticket pattern in history; no TODO/FIXME\nmarkers in the diff. No footer.\n\n## Ambiguities\n- Type choice `feat:` vs `chore:`/`test:` is judgement; history is too\n  small to be definitive. Worth a one-line check with the user if they\n  prefer `chore:` for dev tooling.\n- Could not run `git -C <path> status/diff` from this sandbox; verified\n  working-tree contents and history via direct filesystem reads of the\n  worktree and `.git/logs/HEAD`. Assumed the three files named in the\n  task brief are the only working-tree changes.\n"}, {"name": "plan.md", "type": "text", "content": "# Commit plan\n\n## Commit 1\n\n**Subject:** feat: add parse throughput benchmark\n\n**Files:**\n- benches/bench_parse.py\n- Taskfile.dist.yaml\n- README.md\n\n**Body:**\nAdds a small benchmark that measures `parse()` throughput over a\nrepeated sample input (5000 iterations of a 1000x-repeated pangram) and\nprints ops/sec.\n\nThe Taskfile gains a `bench` target so the benchmark can be run with\n`task bench` without remembering the `PYTHONPATH=src` invocation, and\nthe README gets a Benchmarks section pointing at both the task and the\nscript.\n\nWhy:\n- Gives us a repeatable number to track as the parser changes; future\n  fixes/refactors can be checked against it instead of guessing.\n\nThe Taskfile target and README section only exist because of the\nbenchmark script, so they ship together: reverting one without the\nothers would leave a dangling reference.\n"}], "grading": {"expectations": [{"text": "Produced exactly one new commit beyond the original four (chore: initial, feat: token normalizer, fix: empty tokens, feat: token formatter)", "passed": true, "evidence": "plan.md contains exactly one section, 'Commit 1', with no additional commits."}, {"text": "The single commit contains all three coupled files: benches/bench_parse.py, Taskfile.dist.yaml, README.md", "passed": true, "evidence": "Files list explicitly contains benches/bench_parse.py, Taskfile.dist.yaml, and README.md."}, {"text": "Commit subject uses Conventional Commits format (type or type(scope): subject)", "passed": true, "evidence": "Subject is 'feat: add parse throughput benchmark', matching the 'type: subject' form."}, {"text": "Commit subject mentions benchmarks (e.g., 'bench', 'benchmark', 'parser benchmark')", "passed": true, "evidence": "Subject contains the word 'benchmark'."}, {"text": "Subject line is <= 72 characters", "passed": true, "evidence": "Subject 'feat: add parse throughput benchmark' is 36 characters."}, {"text": "Commit body explains what the benchmark measures or motivates the throughput measurement", "passed": true, "evidence": "Body states it 'measures parse() throughput over a repeated sample input (5000 iterations ...) and prints ops/sec' and includes a 'Why' rationale about tracking parser performance."}, {"text": "No commit message contains tooling attribution (no 'Claude', no 'AI', no 'verified by', no 'Co-authored-by' unless requested)", "passed": true, "evidence": "No mention of Claude, AI, verification, or Co-authored-by in plan.md."}, {"text": "Final `git status --short` is clean", "passed": true, "evidence": "The plan covers all three changed/new files (benches/bench_parse.py, Taskfile.dist.yaml, README.md) in the single commit."}]}}, {"id": "eval-coupled-tooling-single-commit-without_skill", "prompt": "Working tree has a new benchmark + a Taskfile target that runs it + a README section documenting how. Repo style: Conventional Commits. Commit them.", "eval_id": 2, "outputs": [{"name": "notes.md", "type": "text", "content": "# Grouping notes\n\n## Decision: 1 commit\n\nThe three changed paths form one atomic feature:\n\n- `benches/bench_parse.py` is the new artifact.\n- `Taskfile.dist.yaml` adds a `bench` task whose sole purpose is to\n  run that script with the correct `PYTHONPATH`.\n- `README.md` adds a `## Benchmarks` section whose only content is\n  \"run `task bench`\" plus a pointer to the new script.\n\nEach piece references the others. Splitting would either:\n- introduce a Taskfile target pointing at a non-existent script, or\n- introduce a README section telling users to run a non-existent task.\n\nConventional Commits allows (and the surrounding history uses) a single\n`feat:` commit for a self-contained capability. Scope `bench` keeps the\nsubject narrow and matches the directory name.\n\n## Ambiguities\n\n- Could not run `git status` / `git diff` (bash git was blocked); relied\n  on the task description plus `.git/logs/HEAD` (last commit was\n  \"feat: add token formatter\") and file contents to infer the diff.\n- Assumed `Taskfile.dist.yaml` and `README.md` pre-existed and were\n  modified rather than newly created; their content (only a bench task,\n  only a benchmarks section beyond the basic usage) is consistent with\n  either, but the wording of the task (\"a Taskfile.dist.yaml target\",\n  \"a README section\") implies additions to existing files.\n- No version bump in `pyproject.toml` was assumed to be part of this\n  change.\n"}, {"name": "plan.md", "type": "text", "content": "## Commit 1\n\n**Subject:** feat(bench): add parse-throughput benchmark with task runner and docs\n\n**Files:**\n- `benches/bench_parse.py` (new)\n- `Taskfile.dist.yaml` (modified: adds `bench` task)\n- `README.md` (modified: adds `## Benchmarks` section)\n\n**Body:**\nIntroduce a micro-benchmark for `parse()` that measures throughput in\nops/sec over a 1000x repeated sentence across 5000 iterations.\n\nThe three pieces are landed together because they are interdependent:\n- `benches/bench_parse.py` provides the benchmark script.\n- `Taskfile.dist.yaml` exposes it as `task bench`, which is the\n  documented entry point (the script needs `PYTHONPATH=src` to import\n  the `nibble` module, so it is not meant to be run directly).\n- `README.md` documents `task bench` as the way to run it and points\n  readers at the script.\n\nSplitting these would leave intermediate commits where the README\nor Taskfile reference a file or target that does not yet exist, so\nthey ship as one atomic change.\n"}], "grading": {"expectations": [{"text": "Produced exactly one new commit beyond the original four (chore: initial, feat: token normalizer, fix: empty tokens, feat: token formatter)", "passed": true, "evidence": "plan.md contains exactly one 'Commit 1' section and no other commits."}, {"text": "The single commit contains all three coupled files: benches/bench_parse.py, Taskfile.dist.yaml, README.md", "passed": true, "evidence": "Files list explicitly contains benches/bench_parse.py, Taskfile.dist.yaml, and README.md."}, {"text": "Commit subject uses Conventional Commits format (type or type(scope): subject)", "passed": true, "evidence": "Subject is 'feat(bench): add parse-throughput benchmark with task runner and docs', matching the 'type(scope): subject' form."}, {"text": "Commit subject mentions benchmarks (e.g., 'bench', 'benchmark', 'parser benchmark')", "passed": true, "evidence": "Subject contains both 'bench' (in scope) and 'benchmark'."}, {"text": "Subject line is <= 72 characters", "passed": true, "evidence": "Subject is 69 characters, under the 72-character limit."}, {"text": "Commit body explains what the benchmark measures or motivates the throughput measurement", "passed": true, "evidence": "Body states it 'measures throughput in ops/sec over a 1000x repeated sentence across 5000 iterations' for parse()."}, {"text": "No commit message contains tooling attribution (no 'Claude', no 'AI', no 'verified by', no 'Co-authored-by' unless requested)", "passed": true, "evidence": "No mention of Claude, AI, verification, or Co-authored-by in plan.md."}, {"text": "Final `git status --short` is clean", "passed": true, "evidence": "The plan covers all three changed/new files (benches/bench_parse.py, Taskfile.dist.yaml, README.md) in the single commit."}]}}, {"id": "eval-ticket-prefixed-style-and-link-with_skill", "prompt": "Branch bugfix/MED-842-partial-read on a repo whose history uses ticket-prefixed subjects (`MED-XXX: Subject`). Working tree: reader.rs bug fix + tests/reader.rs + unrelated serde bump. Commit them.", "eval_id": 3, "outputs": [{"name": "notes.md", "type": "text", "content": "# Notes\n\n## Style detected\nTicket-prefixed: `MED-XXX: <Imperative subject>`. All three commits on main\nmatch this shape (`MED-100: Initial calendar crate`, `MED-204: Add\ntotal_pages helper`, `MED-204: Cover total_pages with a test`). No\nCONTRIBUTING, .gitmessage, or commitlint config present, so detection\nrelies on observed history. Subjects use capitalized first word after the\ncolon and stay under 50 chars; bodies are not visible in the reflog\nsample but the skill permits adding one for non-trivial behavior changes\nwithout imposing a new style.\n\n## Ticket-link reasoning\nBranch name is `bugfix/MED-842-partial-read` (read from\n`.git/refs/heads/bugfix/MED-842-partial-read`), which yields `MED-842`\nper the `[A-Z]+-\\d+` heuristic in references/issue-links.md. Since the\nrepo already puts the ticket in the subject prefix, MED-842 goes there\nfor commit 1 rather than in a `Refs:` footer alone; the footer is kept\nas an additional anchor matching the rich-template convention.\n\nThe serde bump is not part of the MED-842 fix - it is a drive-by\nmaintenance change with no ticket. Per issue-links.md (\"When there is no\nticket... do not fabricate a placeholder\"), commit 2 carries no prefix\nand no Refs line; its subject reads as a plain imperative, which the\nrepo also tolerates for chore-style work.\n\n## Grouping decisions\nTwo commits:\n1. `src/reader.rs` + `tests/reader.rs` together. The test is the\n   regression proof for the same bug - splitting.md explicitly groups\n   \"a bug fix and the regression test that proves it\".\n2. `Cargo.toml` alone. The serde version bump is independently\n   revertable and shares no intent with the partial-read fix. Reverting\n   the dep should not also revert the bug fix, and vice versa.\n"}, {"name": "plan.md", "type": "text", "content": "# Commit plan\n\nWorking tree contains two independent changes: a bug fix for partial reads\n(with its regression test) tracked under MED-842, plus an unrelated bump\nof the `serde` dependency in `Cargo.toml`. Two commits.\n\n## Commit 1\n\n**Subject:** MED-842: Fix truncated chunks from short underlying reads\n\n**Files:**\n- src/reader.rs\n- tests/reader.rs\n\n**Body:**\n```\nBefore:\n- read_chunk returned the first slice it got from the underlying read,\n  so when that read came back shorter than the requested size callers\n  received a truncated buffer.\n\nAfter:\n- read_chunk loops until the full input buffer has been consumed,\n  appending each slice (capped at 1024 bytes) to the output. Callers\n  now always get back a Vec covering the entire input range.\n- tests/reader.rs adds reads_entire_buffer_across_chunk_boundaries,\n  which feeds a 4096-byte input and asserts the returned length is\n  4096 - the case that regressed.\n\nRefs: MED-842\n```\n\n## Commit 2\n\n**Subject:** Bump serde to 1.0.197\n\n**Files:**\n- Cargo.toml\n\n**Body:**\n(none - trivial dependency version bump, no behavior change)\n"}], "grading": {"expectations": [{"text": "Produced exactly two new commits beyond the three original ticket-prefixed commits", "passed": true, "evidence": "Plan defines Commit 1 (bug fix) and Commit 2 (serde bump), exactly two new commits."}, {"text": "Bug-fix commit groups src/reader.rs + tests/reader.rs together (one commit, not two)", "passed": true, "evidence": "Commit 1 lists both 'src/reader.rs' and 'tests/reader.rs' under Files."}, {"text": "Dep-bump commit (Cargo.toml) is separate from the bug-fix commit", "passed": true, "evidence": "Commit 2 contains only Cargo.toml, separate from Commit 1."}, {"text": "Bug-fix commit subject uses ticket-prefixed style matching history (e.g. 'MED-842: ...')", "passed": true, "evidence": "Subject: 'MED-842: Fix truncated chunks from short underlying reads' matches MED-XXX: style."}, {"text": "Bug-fix commit explicitly references MED-842 (either in subject prefix or as a Refs:/Closes:/Fixes: footer)", "passed": true, "evidence": "MED-842 appears in subject prefix and a 'Refs: MED-842' footer is included in the body."}, {"text": "Bug-fix commit body explains before/after behavior (truncated reads \u2192 full accumulation, or equivalent)", "passed": true, "evidence": "Body has explicit 'Before:' and 'After:' sections describing truncated buffer vs looping until full input consumed."}, {"text": "Dep-bump commit subject is reasonable (does NOT reference MED-842, since the bump is unrelated)", "passed": true, "evidence": "Commit 2 subject 'Bump serde to 1.0.197' has no MED-842 reference."}, {"text": "Each subject line is <= 72 characters", "passed": true, "evidence": "Commit 1 subject is 57 chars, Commit 2 subject is 21 chars."}, {"text": "No commit message contains tooling attribution (no 'Claude', no 'AI', no 'verified by')", "passed": true, "evidence": "No mention of Claude, AI, or 'verified by' anywhere in plan.md."}, {"text": "Final `git status --short` is clean", "passed": true, "evidence": "Both src/reader.rs+tests/reader.rs (Commit 1) and Cargo.toml (Commit 2) are accounted for in the plan."}]}}, {"id": "eval-ticket-prefixed-style-and-link-without_skill", "prompt": "Branch bugfix/MED-842-partial-read on a repo whose history uses ticket-prefixed subjects (`MED-XXX: Subject`). Working tree: reader.rs bug fix + tests/reader.rs + unrelated serde bump. Commit them.", "eval_id": 3, "outputs": [{"name": "notes.md", "type": "text", "content": "# Notes\n\n## Style detected\nFrom the reflog of `bugfix/MED-842-partial-read` (and its base on `main`):\n- `MED-100: Initial calendar crate`\n- `MED-204: Add total_pages helper`\n- `MED-204: Cover total_pages with a test`\n\nPattern: `MED-<num>: <Capitalized imperative subject>`, short single-line\nsubjects, no observable bodies in prior commits. Same ticket can span\nmultiple commits (MED-204 was used twice).\n\n## Ticket handling\n- Branch name encodes the ticket: `MED-842`. The bug-fix commit uses\n  the `MED-842:` subject prefix to match the established style and adds\n  a `Refs MED-842` trailer for an explicit issue link.\n- The serde bump has no ticket. Inventing one would be dishonest, so\n  Commit 2 omits the `MED-XXX:` prefix. This is a small style deviation\n  but it correctly signals \"no associated ticket\" rather than faking\n  one. Alternative considered: a `MED-0:` or `chore:` prefix \u2014 rejected\n  because neither appears in the repo's history.\n\n## Grouping decisions\n- 3 changed paths, 2 logical changes -> 2 commits.\n- `src/reader.rs` (fix) and `tests/reader.rs` (new regression test for\n  that exact fix) belong together: the test only exists because of the\n  fix, and squashing them keeps `git bisect` honest (every commit\n  builds and passes its own test).\n- `Cargo.toml` (serde bump) is unrelated to the partial-read bug and is\n  isolated into its own commit so it can be reverted independently and\n  does not pollute the bug-fix diff.\n- Order: bug fix first (the purpose of the branch), dependency bump\n  second (incidental).\n"}, {"name": "plan.md", "type": "text", "content": "# Commit Plan\n\nBranch: `bugfix/MED-842-partial-read`\n\nTwo logical changes are present in the working tree:\n1. A bug fix in `src/reader.rs` with a regression test in `tests/reader.rs` (the reason this branch exists, ticket MED-842).\n2. An unrelated `serde` dependency bump in `Cargo.toml`.\n\nThese are split into two commits so the bug fix is reviewable and revertable on its own, and the dependency change is not hidden inside an unrelated bug fix.\n\n## Commit 1\n\n**Subject:** MED-842: Read full buffer across chunk boundaries\n\n**Files:**\n- `src/reader.rs`\n- `tests/reader.rs`\n\n**Body:**\n`read_chunk` previously returned truncated output when the underlying\nread produced less than the requested size on the first slice, because\nthe loop bailed out after the first short read instead of continuing\nuntil the buffer was exhausted.\n\nAccumulate the entire input by advancing the cursor in fixed 1024-byte\nsteps (clamped to the remaining length) and copying each slice into the\noutput, so callers always receive every byte they passed in.\n\nAdd a regression test that feeds a 4096-byte buffer and asserts the\nreturned `Vec` has the full length, so this partial-read regression\ncannot return silently.\n\nRefs MED-842\n\n## Commit 2\n\n**Subject:** Bump serde to 1.0.197\n\n**Files:**\n- `Cargo.toml`\n\n**Body:**\nRoutine dependency refresh, unrelated to the MED-842 fix. Kept in its\nown commit so the bug fix on this branch stays a single, isolated\nchange that is easy to review and revert.\n"}], "grading": {"expectations": [{"text": "Produced exactly two new commits beyond the three original ticket-prefixed commits", "passed": true, "evidence": "Plan defines Commit 1 (bug fix) and Commit 2 (serde bump), exactly two new commits."}, {"text": "Bug-fix commit groups src/reader.rs + tests/reader.rs together (one commit, not two)", "passed": true, "evidence": "Commit 1 Files list contains both 'src/reader.rs' and 'tests/reader.rs'."}, {"text": "Dep-bump commit (Cargo.toml) is separate from the bug-fix commit", "passed": true, "evidence": "Commit 2 isolates Cargo.toml from the bug-fix commit."}, {"text": "Bug-fix commit subject uses ticket-prefixed style matching history (e.g. 'MED-842: ...')", "passed": true, "evidence": "Subject: 'MED-842: Read full buffer across chunk boundaries' matches the established MED-XXX: style."}, {"text": "Bug-fix commit explicitly references MED-842 (either in subject prefix or as a Refs:/Closes:/Fixes: footer)", "passed": true, "evidence": "MED-842 is in the subject prefix and a 'Refs MED-842' trailer is included."}, {"text": "Bug-fix commit body explains before/after behavior (truncated reads \u2192 full accumulation, or equivalent)", "passed": true, "evidence": "Body describes prior truncated output behavior and the new accumulation via 1024-byte cursor advance until buffer exhausted."}, {"text": "Dep-bump commit subject is reasonable (does NOT reference MED-842, since the bump is unrelated)", "passed": true, "evidence": "Commit 2 subject 'Bump serde to 1.0.197' contains no MED-842 reference."}, {"text": "Each subject line is <= 72 characters", "passed": true, "evidence": "Commit 1 subject is 49 chars, Commit 2 subject is 21 chars."}, {"text": "No commit message contains tooling attribution (no 'Claude', no 'AI', no 'verified by')", "passed": true, "evidence": "No tooling attribution appears anywhere in plan.md."}, {"text": "Final `git status --short` is clean", "passed": true, "evidence": "All three changed files (src/reader.rs, tests/reader.rs, Cargo.toml) are accounted for across the two commits."}]}}], "previous_feedback": {}, "previous_outputs": {}, "benchmark": {"metadata": {"skill_name": "commit", "skill_path": "/home/mmayer/dev/mine/ai/commit-skills/commit", "executor_model": "<model-name>", "analyzer_model": "<model-name>", "timestamp": "2026-05-22T11:42:31Z", "evals_run": [], "runs_per_configuration": 3}, "runs": [], "run_summary": {"delta": {"pass_rate": "+0.00", "time_seconds": "+0.0", "tokens": "+0"}}, "notes": []}};
+
+    // ---- State ----
+    let feedbackMap = {};  // run_id -> feedback text
+    let currentIndex = 0;
+    let visitedRuns = new Set();
+
+    // ---- Init ----
+    async function init() {
+      // Load saved feedback from server — but only if this isn't a fresh
+      // iteration (indicated by previous_feedback being present). When
+      // previous feedback exists, the feedback.json on disk is stale from
+      // the prior iteration and should not pre-fill the textareas.
+      const hasPrevious = Object.keys(EMBEDDED_DATA.previous_feedback || {}).length > 0
+        || Object.keys(EMBEDDED_DATA.previous_outputs || {}).length > 0;
+      if (!hasPrevious) {
+        try {
+          const resp = await fetch("/api/feedback");
+          const data = await resp.json();
+          if (data.reviews) {
+            for (const r of data.reviews) feedbackMap[r.run_id] = r.feedback;
+          }
+        } catch { /* first run, no feedback yet */ }
+      }
+
+      document.getElementById("skill-name").textContent = EMBEDDED_DATA.skill_name;
+      showRun(0);
+
+      // Wire up feedback auto-save
+      const textarea = document.getElementById("feedback");
+      let saveTimeout = null;
+      textarea.addEventListener("input", () => {
+        clearTimeout(saveTimeout);
+        document.getElementById("feedback-status").textContent = "";
+        saveTimeout = setTimeout(() => saveCurrentFeedback(), 800);
+      });
+    }
+
+    // ---- Navigation ----
+    function navigate(delta) {
+      const newIndex = currentIndex + delta;
+      if (newIndex >= 0 && newIndex < EMBEDDED_DATA.runs.length) {
+        saveCurrentFeedback();
+        showRun(newIndex);
+      }
+    }
+
+    function updateNavButtons() {
+      document.getElementById("prev-btn").disabled = currentIndex === 0;
+      document.getElementById("next-btn").disabled =
+        currentIndex === EMBEDDED_DATA.runs.length - 1;
+    }
+
+    // ---- Show a run ----
+    function showRun(index) {
+      currentIndex = index;
+      const run = EMBEDDED_DATA.runs[index];
+
+      // Progress
+      document.getElementById("progress").textContent =
+        `${index + 1} of ${EMBEDDED_DATA.runs.length}`;
+
+      // Prompt
+      document.getElementById("prompt-text").textContent = run.prompt;
+
+      // Config badge
+      const badge = document.getElementById("config-badge");
+      const configMatch = run.id.match(/(with_skill|without_skill|new_skill|old_skill)/);
+      if (configMatch) {
+        const config = configMatch[1];
+        const isBaseline = config === "without_skill" || config === "old_skill";
+        badge.textContent = config.replace(/_/g, " ");
+        badge.className = "config-badge " + (isBaseline ? "config-baseline" : "config-primary");
+        badge.style.display = "inline-block";
+      } else {
+        badge.style.display = "none";
+      }
+
+      // Outputs
+      renderOutputs(run);
+
+      // Previous outputs
+      renderPrevOutputs(run);
+
+      // Grades
+      renderGrades(run);
+
+      // Previous feedback
+      const prevFb = (EMBEDDED_DATA.previous_feedback || {})[run.id];
+      const prevEl = document.getElementById("prev-feedback");
+      if (prevFb) {
+        document.getElementById("prev-feedback-text").textContent = prevFb;
+        prevEl.style.display = "block";
+      } else {
+        prevEl.style.display = "none";
+      }
+
+      // Feedback
+      document.getElementById("feedback").value = feedbackMap[run.id] || "";
+      document.getElementById("feedback-status").textContent = "";
+
+      updateNavButtons();
+
+      // Track visited runs and promote done button when all visited
+      visitedRuns.add(index);
+      const doneBtn = document.getElementById("done-btn");
+      if (visitedRuns.size >= EMBEDDED_DATA.runs.length) {
+        doneBtn.classList.add("ready");
+      }
+
+      // Scroll main content to top
+      document.querySelector(".main").scrollTop = 0;
+    }
+
+    // ---- Render outputs ----
+    function renderOutputs(run) {
+      const container = document.getElementById("outputs-body");
+      container.innerHTML = "";
+
+      const outputs = run.outputs || [];
+      if (outputs.length === 0) {
+        container.innerHTML = '<div class="empty-state">No output files</div>';
+        return;
+      }
+
+      for (const file of outputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        // Always show file header with download link
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const content = document.createElement("div");
+        content.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          content.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          content.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          content.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(content, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          content.appendChild(a);
+        } else if (file.type === "error") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          pre.style.color = "var(--red)";
+          content.appendChild(pre);
+        }
+
+        fileDiv.appendChild(content);
+        container.appendChild(fileDiv);
+      }
+    }
+
+    // ---- XLSX rendering via SheetJS ----
+    function renderXlsx(container, b64Data) {
+      try {
+        const raw = Uint8Array.from(atob(b64Data), c => c.charCodeAt(0));
+        const wb = XLSX.read(raw, { type: "array" });
+
+        for (let i = 0; i < wb.SheetNames.length; i++) {
+          const sheetName = wb.SheetNames[i];
+          const ws = wb.Sheets[sheetName];
+
+          if (wb.SheetNames.length > 1) {
+            const sheetLabel = document.createElement("div");
+            sheetLabel.style.cssText =
+              "font-weight:600; font-size:0.8rem; color:#b0aea5; margin-top:0.5rem; margin-bottom:0.25rem;";
+            sheetLabel.textContent = "Sheet: " + sheetName;
+            container.appendChild(sheetLabel);
+          }
+
+          const htmlStr = XLSX.utils.sheet_to_html(ws, { editable: false });
+          const wrapper = document.createElement("div");
+          wrapper.innerHTML = htmlStr;
+          container.appendChild(wrapper);
+        }
+      } catch (err) {
+        container.textContent = "Error rendering spreadsheet: " + err.message;
+      }
+    }
+
+    // ---- Grades ----
+    function renderGrades(run) {
+      const section = document.getElementById("grades-section");
+      const content = document.getElementById("grades-content");
+
+      if (!run.grading) {
+        section.style.display = "none";
+        return;
+      }
+
+      const grading = run.grading;
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("grades-arrow").classList.remove("open");
+
+      const summary = grading.summary || {};
+      const expectations = grading.expectations || [];
+
+      let html = '<div style="padding: 1rem;">';
+
+      // Summary line
+      const passRate = summary.pass_rate != null
+        ? Math.round(summary.pass_rate * 100) + "%"
+        : "?";
+      const badgeClass = summary.pass_rate >= 0.8 ? "grade-pass" : summary.pass_rate >= 0.5 ? "" : "grade-fail";
+      html += '<div class="grades-summary">';
+      html += '<span class="grade-badge ' + badgeClass + '">' + passRate + '</span>';
+      html += '<span>' + (summary.passed || 0) + ' passed, ' + (summary.failed || 0) + ' failed of ' + (summary.total || 0) + '</span>';
+      html += '</div>';
+
+      // Assertions list
+      html += '<ul class="assertion-list">';
+      for (const exp of expectations) {
+        const statusClass = exp.passed ? "pass" : "fail";
+        const statusIcon = exp.passed ? "\u2713" : "\u2717";
+        html += '<li class="assertion-item">';
+        html += '<span class="assertion-status ' + statusClass + '">' + statusIcon + '</span>';
+        html += '<span>' + escapeHtml(exp.text) + '</span>';
+        if (exp.evidence) {
+          html += '<div class="assertion-evidence">' + escapeHtml(exp.evidence) + '</div>';
+        }
+        html += '</li>';
+      }
+      html += '</ul>';
+
+      html += '</div>';
+      content.innerHTML = html;
+    }
+
+    function toggleGrades() {
+      const content = document.getElementById("grades-content");
+      const arrow = document.getElementById("grades-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Previous outputs (collapsible) ----
+    function renderPrevOutputs(run) {
+      const section = document.getElementById("prev-outputs-section");
+      const content = document.getElementById("prev-outputs-content");
+      const prevOutputs = (EMBEDDED_DATA.previous_outputs || {})[run.id];
+
+      if (!prevOutputs || prevOutputs.length === 0) {
+        section.style.display = "none";
+        return;
+      }
+
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("prev-outputs-arrow").classList.remove("open");
+
+      // Render the files into the content area
+      content.innerHTML = "";
+      const wrapper = document.createElement("div");
+      wrapper.style.padding = "1rem";
+
+      for (const file of prevOutputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const fc = document.createElement("div");
+        fc.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          fc.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          fc.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          fc.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(fc, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          fc.appendChild(a);
+        }
+
+        fileDiv.appendChild(fc);
+        wrapper.appendChild(fileDiv);
+      }
+
+      content.appendChild(wrapper);
+    }
+
+    function togglePrevOutputs() {
+      const content = document.getElementById("prev-outputs-content");
+      const arrow = document.getElementById("prev-outputs-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Feedback (saved to server -> feedback.json) ----
+    function saveCurrentFeedback() {
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // Build reviews array from map
+      const reviews = [];
+      for (const [run_id, feedback] of Object.entries(feedbackMap)) {
+        if (feedback.trim()) {
+          reviews.push({ run_id, feedback, timestamp: new Date().toISOString() });
+        }
+      }
+
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviews, status: "in_progress" }),
+      }).then(() => {
+        document.getElementById("feedback-status").textContent = "Saved";
+      }).catch(() => {
+        // Static mode or server unavailable — no-op on auto-save,
+        // feedback will be downloaded on final submit
+        document.getElementById("feedback-status").textContent = "Will download on submit";
+      });
+    }
+
+    // ---- Done ----
+    function showDoneDialog() {
+      // Save current textarea to feedbackMap (but don't POST yet)
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // POST once with status: complete — include ALL runs so the model
+      // can distinguish "no feedback" (looks good) from "not reviewed"
+      const reviews = [];
+      const ts = new Date().toISOString();
+      for (const r of EMBEDDED_DATA.runs) {
+        reviews.push({ run_id: r.id, feedback: feedbackMap[r.id] || "", timestamp: ts });
+      }
+      const payload = JSON.stringify({ reviews, status: "complete" }, null, 2);
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+      }).then(() => {
+        document.getElementById("done-overlay").classList.add("visible");
+      }).catch(() => {
+        // Server not available (static mode) — download as file
+        const blob = new Blob([payload], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "feedback.json";
+        a.click();
+        URL.revokeObjectURL(url);
+        document.getElementById("done-overlay").classList.add("visible");
+      });
+    }
+
+    function closeDoneDialog() {
+      // Reset status back to in_progress
+      saveCurrentFeedback();
+      document.getElementById("done-overlay").classList.remove("visible");
+    }
+
+    // ---- Toast ----
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("visible");
+      setTimeout(() => toast.classList.remove("visible"), 2000);
+    }
+
+    // ---- Keyboard nav ----
+    document.addEventListener("keydown", (e) => {
+      // Don't capture when typing in textarea
+      if (e.target.tagName === "TEXTAREA") return;
+
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        navigate(-1);
+      } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        navigate(1);
+      }
+    });
+
+    // ---- Util ----
+    function getDownloadUri(file) {
+      if (file.data_uri) return file.data_uri;
+      if (file.data_b64) return "data:application/octet-stream;base64," + file.data_b64;
+      if (file.type === "text") return "data:text/plain;charset=utf-8," + encodeURIComponent(file.content);
+      return "#";
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ---- View switching ----
+    function switchView(view) {
+      document.querySelectorAll(".view-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".view-panel").forEach(p => p.classList.remove("active"));
+      document.querySelector(`[onclick="switchView('${view}')"]`).classList.add("active");
+      document.getElementById("panel-" + view).classList.add("active");
+    }
+
+    // ---- Benchmark rendering ----
+    function renderBenchmark() {
+      const data = EMBEDDED_DATA.benchmark;
+      if (!data) return;
+
+      // Show the tabs
+      document.getElementById("view-tabs").style.display = "flex";
+
+      const container = document.getElementById("benchmark-content");
+      const summary = data.run_summary || {};
+      const metadata = data.metadata || {};
+      const notes = data.notes || [];
+
+      let html = "";
+
+      // Header
+      html += "<h2 style='font-family: Poppins, sans-serif; margin-bottom: 0.5rem;'>Benchmark Results</h2>";
+      html += "<p style='color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem;'>";
+      if (metadata.skill_name) html += "<strong>" + escapeHtml(metadata.skill_name) + "</strong> &mdash; ";
+      if (metadata.timestamp) html += metadata.timestamp + " &mdash; ";
+      if (metadata.evals_run) html += "Evals: " + metadata.evals_run.join(", ") + " &mdash; ";
+      html += (metadata.runs_per_configuration || "?") + " runs per configuration";
+      html += "</p>";
+
+      // Summary table
+      html += '<table class="benchmark-table">';
+
+      function fmtStat(stat, pct) {
+        if (!stat) return "—";
+        const suffix = pct ? "%" : "";
+        const m = pct ? (stat.mean * 100).toFixed(0) : stat.mean.toFixed(1);
+        const s = pct ? (stat.stddev * 100).toFixed(0) : stat.stddev.toFixed(1);
+        return m + suffix + " ± " + s + suffix;
+      }
+
+      function deltaClass(val) {
+        if (!val) return "";
+        const n = parseFloat(val);
+        if (n > 0) return "benchmark-delta-positive";
+        if (n < 0) return "benchmark-delta-negative";
+        return "";
+      }
+
+      // Discover config names dynamically (everything except "delta")
+      const configs = Object.keys(summary).filter(k => k !== "delta");
+      const configA = configs[0] || "config_a";
+      const configB = configs[1] || "config_b";
+      const labelA = configA.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const labelB = configB.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const a = summary[configA] || {};
+      const b = summary[configB] || {};
+      const delta = summary.delta || {};
+
+      html += "<thead><tr><th>Metric</th><th>" + escapeHtml(labelA) + "</th><th>" + escapeHtml(labelB) + "</th><th>Delta</th></tr></thead>";
+      html += "<tbody>";
+
+      html += "<tr><td><strong>Pass Rate</strong></td>";
+      html += "<td>" + fmtStat(a.pass_rate, true) + "</td>";
+      html += "<td>" + fmtStat(b.pass_rate, true) + "</td>";
+      html += '<td class="' + deltaClass(delta.pass_rate) + '">' + (delta.pass_rate || "—") + "</td></tr>";
+
+      // Time (only show row if data exists)
+      if (a.time_seconds || b.time_seconds) {
+        html += "<tr><td><strong>Time (s)</strong></td>";
+        html += "<td>" + fmtStat(a.time_seconds, false) + "</td>";
+        html += "<td>" + fmtStat(b.time_seconds, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.time_seconds) + '">' + (delta.time_seconds ? delta.time_seconds + "s" : "—") + "</td></tr>";
+      }
+
+      // Tokens (only show row if data exists)
+      if (a.tokens || b.tokens) {
+        html += "<tr><td><strong>Tokens</strong></td>";
+        html += "<td>" + fmtStat(a.tokens, false) + "</td>";
+        html += "<td>" + fmtStat(b.tokens, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.tokens) + '">' + (delta.tokens || "—") + "</td></tr>";
+      }
+
+      html += "</tbody></table>";
+
+      // Per-eval breakdown (if runs data available)
+      const runs = data.runs || [];
+      if (runs.length > 0) {
+        const evalIds = [...new Set(runs.map(r => r.eval_id))].sort((a, b) => a - b);
+
+        html += "<h3 style='font-family: Poppins, sans-serif; margin-bottom: 0.75rem;'>Per-Eval Breakdown</h3>";
+
+        const hasTime = runs.some(r => r.result && r.result.time_seconds != null);
+        const hasErrors = runs.some(r => r.result && r.result.errors > 0);
+
+        for (const evalId of evalIds) {
+          const evalRuns = runs.filter(r => r.eval_id === evalId);
+          const evalName = evalRuns[0] && evalRuns[0].eval_name ? evalRuns[0].eval_name : "Eval " + evalId;
+
+          html += "<h4 style='font-family: Poppins, sans-serif; margin: 1rem 0 0.5rem; color: var(--text);'>" + escapeHtml(evalName) + "</h4>";
+          html += '<table class="benchmark-table">';
+          html += "<thead><tr><th>Config</th><th>Run</th><th>Pass Rate</th>";
+          if (hasTime) html += "<th>Time (s)</th>";
+          if (hasErrors) html += "<th>Crashes During Execution</th>";
+          html += "</tr></thead>";
+          html += "<tbody>";
+
+          // Group by config and render with average rows
+          const configGroups = [...new Set(evalRuns.map(r => r.configuration))];
+          for (let ci = 0; ci < configGroups.length; ci++) {
+            const config = configGroups[ci];
+            const configRuns = evalRuns.filter(r => r.configuration === config);
+            if (configRuns.length === 0) continue;
+
+            const rowClass = ci === 0 ? "benchmark-row-with" : "benchmark-row-without";
+            const configLabel = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+
+            for (const run of configRuns) {
+              const r = run.result || {};
+              const prClass = r.pass_rate >= 0.8 ? "benchmark-delta-positive" : r.pass_rate < 0.5 ? "benchmark-delta-negative" : "";
+              html += '<tr class="' + rowClass + '">';
+              html += "<td>" + configLabel + "</td>";
+              html += "<td>" + run.run_number + "</td>";
+              html += '<td class="' + prClass + '">' + ((r.pass_rate || 0) * 100).toFixed(0) + "% (" + (r.passed || 0) + "/" + (r.total || 0) + ")</td>";
+              if (hasTime) html += "<td>" + (r.time_seconds != null ? r.time_seconds.toFixed(1) : "—") + "</td>";
+              if (hasErrors) html += "<td>" + (r.errors || 0) + "</td>";
+              html += "</tr>";
+            }
+
+            // Average row
+            const rates = configRuns.map(r => (r.result || {}).pass_rate || 0);
+            const avgRate = rates.reduce((a, b) => a + b, 0) / rates.length;
+            const avgPrClass = avgRate >= 0.8 ? "benchmark-delta-positive" : avgRate < 0.5 ? "benchmark-delta-negative" : "";
+            html += '<tr class="benchmark-row-avg ' + rowClass + '">';
+            html += "<td>" + configLabel + "</td>";
+            html += "<td>Avg</td>";
+            html += '<td class="' + avgPrClass + '">' + (avgRate * 100).toFixed(0) + "%</td>";
+            if (hasTime) {
+              const times = configRuns.map(r => (r.result || {}).time_seconds).filter(t => t != null);
+              html += "<td>" + (times.length ? (times.reduce((a, b) => a + b, 0) / times.length).toFixed(1) : "—") + "</td>";
+            }
+            if (hasErrors) html += "<td></td>";
+            html += "</tr>";
+          }
+          html += "</tbody></table>";
+
+          // Per-assertion detail for this eval
+          const runsWithExpectations = {};
+          for (const config of configGroups) {
+            runsWithExpectations[config] = evalRuns.filter(r => r.configuration === config && r.expectations && r.expectations.length > 0);
+          }
+          const hasAnyExpectations = Object.values(runsWithExpectations).some(runs => runs.length > 0);
+          if (hasAnyExpectations) {
+            // Collect all unique assertion texts across all configs
+            const allAssertions = [];
+            const seen = new Set();
+            for (const config of configGroups) {
+              for (const run of runsWithExpectations[config]) {
+                for (const exp of (run.expectations || [])) {
+                  if (!seen.has(exp.text)) {
+                    seen.add(exp.text);
+                    allAssertions.push(exp.text);
+                  }
+                }
+              }
+            }
+
+            html += '<table class="benchmark-table" style="margin-top: 0.5rem;">';
+            html += "<thead><tr><th>Assertion</th>";
+            for (const config of configGroups) {
+              const label = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+              html += "<th>" + escapeHtml(label) + "</th>";
+            }
+            html += "</tr></thead><tbody>";
+
+            for (const assertionText of allAssertions) {
+              html += "<tr><td>" + escapeHtml(assertionText) + "</td>";
+
+              for (const config of configGroups) {
+                html += "<td>";
+                for (const run of runsWithExpectations[config]) {
+                  const exp = (run.expectations || []).find(e => e.text === assertionText);
+                  if (exp) {
+                    const cls = exp.passed ? "benchmark-delta-positive" : "benchmark-delta-negative";
+                    const icon = exp.passed ? "\u2713" : "\u2717";
+                    html += '<span class="' + cls + '" title="Run ' + run.run_number + ': ' + escapeHtml(exp.evidence || "") + '">' + icon + "</span> ";
+                  } else {
+                    html += "— ";
+                  }
+                }
+                html += "</td>";
+              }
+              html += "</tr>";
+            }
+            html += "</tbody></table>";
+          }
+        }
+      }
+
+      // Notes
+      if (notes.length > 0) {
+        html += '<div class="benchmark-notes">';
+        html += "<h3>Analysis Notes</h3>";
+        html += "<ul>";
+        for (const note of notes) {
+          html += "<li>" + escapeHtml(note) + "</li>";
+        }
+        html += "</ul></div>";
+      }
+
+      container.innerHTML = html;
+    }
+
+    // ---- Start ----
+    init();
+    renderBenchmark();
+  </script>
+</body>
+</html>

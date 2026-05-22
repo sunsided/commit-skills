@@ -1,0 +1,17 @@
+{
+  "eval_id": 3,
+  "eval_name": "ticket-prefixed-style-and-link",
+  "prompt": "Branch bugfix/MED-842-partial-read on a repo whose history uses ticket-prefixed subjects (`MED-XXX: Subject`). Working tree: reader.rs bug fix + tests/reader.rs + unrelated serde bump. Commit them.",
+  "assertions": [
+    {"text": "Produced exactly two new commits beyond the three original ticket-prefixed commits", "weight": 1.0},
+    {"text": "Bug-fix commit groups src/reader.rs + tests/reader.rs together (one commit, not two)", "weight": 1.0},
+    {"text": "Dep-bump commit (Cargo.toml) is separate from the bug-fix commit", "weight": 1.0},
+    {"text": "Bug-fix commit subject uses ticket-prefixed style matching history (e.g. 'MED-842: ...')", "weight": 1.0},
+    {"text": "Bug-fix commit explicitly references MED-842 (either in subject prefix or as a Refs:/Closes:/Fixes: footer)", "weight": 1.0},
+    {"text": "Bug-fix commit body explains before/after behavior (truncated reads → full accumulation, or equivalent)", "weight": 1.0},
+    {"text": "Dep-bump commit subject is reasonable (does NOT reference MED-842, since the bump is unrelated)", "weight": 1.0},
+    {"text": "Each subject line is <= 72 characters", "weight": 0.5},
+    {"text": "No commit message contains tooling attribution (no 'Claude', no 'AI', no 'verified by')", "weight": 1.0},
+    {"text": "Final `git status --short` is clean", "weight": 0.5}
+  ]
+}

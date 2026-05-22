@@ -1,0 +1,14 @@
+{
+  "expectations": [
+    {"text": "Produced exactly three new commits beyond the original four (Initial, version helper, bump, version test)", "passed": true, "evidence": "Plan contains exactly three sections: Commit 1 (user endpoint), Commit 2 (CI bump), Commit 3 (README typo)."},
+    {"text": "Feature commit groups src/users.js + tests/users.test.js + src/index.js wiring together", "passed": true, "evidence": "Commit 1 Files line: 'src/users.js, tests/users.test.js, src/index.js'."},
+    {"text": "Feature commit subject is plain imperative (not Conventional Commits)", "passed": true, "evidence": "'Add user lookup endpoint' — capitalized imperative verb, no type/scope prefix; notes.md explicitly declines Conventional Commits."},
+    {"text": "CI workflow change (.github/workflows/ci.yml) is its own commit, not bundled with the feature", "passed": true, "evidence": "Commit 2 Files line: '.github/workflows/ci.yml' only."},
+    {"text": "README typo fix is its own commit, not bundled with the feature", "passed": true, "evidence": "Commit 3 Files line: 'README.md' only."},
+    {"text": "Each subject line is <= 72 characters", "passed": true, "evidence": "Lengths measured: 24, 26, 38 characters — all <= 72."},
+    {"text": "Feature commit body explains the new endpoint behavior (before/after, or what it does)", "passed": true, "evidence": "Body has explicit 'Before:' and 'After:' sections describing routing and 404 behavior."},
+    {"text": "No commit message contains tooling attribution (no 'Claude', no 'AI', no 'verified by', no 'Co-authored-by' unless requested)", "passed": true, "evidence": "No such strings appear in plan.md."},
+    {"text": "No commit was made with `git add -A` or `git add .` (files staged explicitly)", "passed": true, "evidence": "Each commit has an explicit Files: list naming individual paths, implying per-file staging."},
+    {"text": "Final `git status --short` is clean (no leftover unstaged changes from the original three groups)", "passed": true, "evidence": "All three change groups (users feature, ci.yml, README.md) are covered across the three commits with explicit file lists; no files left unassigned."}
+  ]
+}

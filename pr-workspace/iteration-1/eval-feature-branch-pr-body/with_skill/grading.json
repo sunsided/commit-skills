@@ -1,0 +1,59 @@
+{
+  "expectations": [
+    {
+      "text": "Title uses Conventional Commits style (e.g., feat(booking): ...) since repo history is conventional",
+      "passed": true,
+      "evidence": "Title is 'feat(booking): add explicit session booking step before messaging' — exact Conventional Commits scoped form."
+    },
+    {
+      "text": "Title is <= 72 characters",
+      "passed": true,
+      "evidence": "Title is 65 characters, under the 72-character limit."
+    },
+    {
+      "text": "Body has a Summary section (or equivalent lead paragraph) describing what the PR does in product/system-level language, not file-level",
+      "passed": true,
+      "evidence": "'## Summary' section describes the behavior (explicit booking step reserving a slot before messaging, send_strict rejecting missing sessions) at the system level, not by listing files."
+    },
+    {
+      "text": "Body has a Why or motivation section explaining the race-condition problem the change addresses",
+      "passed": true,
+      "evidence": "'## Why' section explicitly states: 'Two clients hitting the same therapist slot could both succeed under the old implicit-session flow ... racing on writes ... serialises the contended step on a slot-level lock.'"
+    },
+    {
+      "text": "MED-481 issue link appears in the body (e.g., 'Closes MED-481', 'Refs: MED-481', or similar)",
+      "passed": true,
+      "evidence": "'Closes MED-481.' appears at the end of the Why section."
+    },
+    {
+      "text": "Body contains a bulleted list of key changes (load-bearing changes, not file-by-file)",
+      "passed": true,
+      "evidence": "'## Key changes' has four bullets describing the SlotLock primitive, booking service, send_strict 409 behavior, and race-coverage test — focused on load-bearing pieces."
+    },
+    {
+      "text": "Body acknowledges the behavioral change for missing-session requests (409 / breaking change risk)",
+      "passed": true,
+      "evidence": "Risks section: 'send_strict is a behaviour change relative to send: callers that relied on implicit session creation will now see a 409.'"
+    },
+    {
+      "text": "Body has a Review notes / review-instructions section telling reviewers where to start (file path) and what to scrutinize",
+      "passed": true,
+      "evidence": "'## Review notes' explicitly says 'Start in src/booking/lock.py' and calls out the 'finally: _lock.release(slot_key)' as the critical line to scrutinize."
+    },
+    {
+      "text": "Body does NOT enumerate the individual commits (no 'Commits:' list, no per-commit headers, no commit hashes)",
+      "passed": true,
+      "evidence": "No commit list, headers, or hashes appear anywhere in the body."
+    },
+    {
+      "text": "Body does NOT contain tooling references ('Claude', 'AI-written', 'verified by running tests', test-output dumps, etc.)",
+      "passed": true,
+      "evidence": "No mentions of Claude, AI, tooling, or test-output dumps in the body."
+    },
+    {
+      "text": "Body length is between 15 and 60 lines (sensible feature-PR size)",
+      "passed": true,
+      "evidence": "Body is 48 lines, within the 15-60 line range."
+    }
+  ]
+}

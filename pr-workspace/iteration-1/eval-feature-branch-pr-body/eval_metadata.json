@@ -1,0 +1,18 @@
+{
+  "eval_id": 1,
+  "eval_name": "feature-branch-pr-body",
+  "prompt": "Three-commit feature branch feat/MED-481-explicit-booking against main. Repo uses Conventional Commits in PR titles. Draft PR title + body.",
+  "assertions": [
+    {"text": "Title uses Conventional Commits style (e.g., feat(booking): ...) since repo history is conventional", "weight": 1.0},
+    {"text": "Title is <= 72 characters", "weight": 0.5},
+    {"text": "Body has a Summary section (or equivalent lead paragraph) describing what the PR does in product/system-level language, not file-level", "weight": 1.0},
+    {"text": "Body has a Why or motivation section explaining the race-condition problem the change addresses", "weight": 1.0},
+    {"text": "MED-481 issue link appears in the body (e.g., 'Closes MED-481', 'Refs: MED-481', or similar)", "weight": 1.0},
+    {"text": "Body contains a bulleted list of key changes (load-bearing changes, not file-by-file)", "weight": 1.0},
+    {"text": "Body acknowledges the behavioral change for missing-session requests (409 / breaking change risk)", "weight": 1.0},
+    {"text": "Body has a Review notes / review-instructions section telling reviewers where to start (file path) and what to scrutinize", "weight": 1.0},
+    {"text": "Body does NOT enumerate the individual commits (no 'Commits:' list, no per-commit headers, no commit hashes)", "weight": 1.0},
+    {"text": "Body does NOT contain tooling references ('Claude', 'AI-written', 'verified by running tests', test-output dumps, etc.)", "weight": 1.0},
+    {"text": "Body length is between 15 and 60 lines (sensible feature-PR size)", "weight": 0.5}
+  ]
+}

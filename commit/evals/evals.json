@@ -1,0 +1,26 @@
+{
+  "skill_name": "commit",
+  "evals": [
+    {
+      "id": 1,
+      "name": "mixed-changes-three-commits",
+      "prompt": "First, run `bash /home/mmayer/dev/mine/ai/commit-skills/fixtures/commit/mixed-changes.sh /tmp/eval-commit-mixed` to set up a working tree. Then `cd /tmp/eval-commit-mixed`. The working tree contains three unrelated changes: a new /users/:id API endpoint with its test, a CI workflow Node version bump, and a README typo fix. Commit these changes. The repo's existing history uses plain imperative subject lines.",
+      "expected_output": "Three separate commits, each in plain imperative style. (1) feature commit grouping src/users.js + tests/users.test.js + the src/index.js wiring, body explaining the new endpoint; (2) ci commit for .github/workflows/ci.yml with one-line subject; (3) docs commit for the README typo with minimal/no body. No tooling references in any message. No `git add -A`.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "coupled-tooling-single-commit",
+      "prompt": "First, run `bash /home/mmayer/dev/mine/ai/commit-skills/fixtures/commit/coupled-tooling.sh /tmp/eval-commit-coupled` to set up a working tree. Then `cd /tmp/eval-commit-coupled`. The working tree contains a new benchmark, a Taskfile.dist.yaml target to run it, and a README section documenting how. Commit these changes. The repo's history is Conventional Commits.",
+      "expected_output": "One single commit (not three). Subject in Conventional Commits style, e.g. `feat(bench): add parser throughput benchmark` or similar. Body explains what the benchmark measures and notes the Taskfile target + README addition as part of the same intent. No tooling references.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "ticket-prefixed-style-and-link",
+      "prompt": "First, run `bash /home/mmayer/dev/mine/ai/commit-skills/fixtures/commit/ticket-prefixed.sh /tmp/eval-commit-ticket` to set up a working tree on a branch named `bugfix/MED-842-partial-read`. Then `cd /tmp/eval-commit-ticket`. The working tree has a bug fix in src/reader.rs with a regression test, plus an unrelated serde dependency bump in Cargo.toml. Commit these changes. Pay attention to the existing commit history's style.",
+      "expected_output": "Two commits, both with ticket-prefixed subjects matching history (`MED-XXX: Subject`). Commit 1: the reader.rs fix + tests/reader.rs together, subject like `MED-842: Fix truncated reads in read_chunk`, body covers before→after and ties to the branch's ticket. Commit 2: the serde bump, subject and body distinct from the fix. The MED-842 ticket should appear naturally either in the subject (matching style) or as a footer.",
+      "files": []
+    }
+  ]
+}
