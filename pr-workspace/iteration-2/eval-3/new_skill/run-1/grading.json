@@ -1,0 +1,43 @@
+{
+  "expectations": [
+    {
+      "text": "uses template headings exactly",
+      "passed": true,
+      "evidence": "Description / Type of change / Testing / Reviewer notes / Checklist"
+    },
+    {
+      "text": "Testing section IS filled (exception path works)",
+      "passed": true,
+      "evidence": "Testing filled with inspection-based equivalence note, no 'I ran' chatter"
+    },
+    {
+      "text": "Type of change ticks only Refactor",
+      "passed": true,
+      "evidence": "[x] Refactor; others unticked"
+    },
+    {
+      "text": "template HTML comments removed",
+      "passed": true,
+      "evidence": "no HTML comments in output"
+    },
+    {
+      "text": "no commit enumeration, no tooling attribution",
+      "passed": true,
+      "evidence": "clean"
+    },
+    {
+      "text": "title is a single concise line under 72 chars",
+      "passed": false,
+      "evidence": "'refactor: consolidate per-method retry loops into a single with_retry helper' = 76 chars (>72)"
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 1,
+    "total": 6,
+    "pass_rate": 0.8333
+  },
+  "timing": {
+    "total_duration_seconds": 70.3
+  }
+}

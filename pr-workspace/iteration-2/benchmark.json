@@ -1,0 +1,379 @@
+{
+  "metadata": {
+    "skill_name": "pr",
+    "skill_path": "/chaos/dev/mine/ai/commit-skills/pr",
+    "executor_model": "claude (subagent default)",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-06-04T20:05:10Z",
+    "evals_run": [
+      1,
+      3,
+      4
+    ],
+    "runs_per_configuration": 3
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "new_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 72.4,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "CC-style title under 72",
+          "passed": true,
+          "evidence": "'feat(booking): add explicit ... booking ...' <72"
+        },
+        {
+          "text": "links MED-481",
+          "passed": true,
+          "evidence": "'Closes MED-481'"
+        },
+        {
+          "text": "Key changes not per-commit",
+          "passed": true,
+          "evidence": "load-bearing bullets, not commit subjects"
+        },
+        {
+          "text": "review notes point to a concrete start file",
+          "passed": true,
+          "evidence": "'Start in src/booking/lock.py'"
+        },
+        {
+          "text": "no verification/tooling chatter",
+          "passed": true,
+          "evidence": "no 'I ran'/'tests pass'"
+        },
+        {
+          "text": "does NOT invent Testing section (no template)",
+          "passed": true,
+          "evidence": "default structure, no Testing heading"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "new_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.8333,
+        "passed": 5,
+        "failed": 1,
+        "total": 6,
+        "time_seconds": 70.3,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "uses template headings exactly",
+          "passed": true,
+          "evidence": "Description / Type of change / Testing / Reviewer notes / Checklist"
+        },
+        {
+          "text": "Testing section IS filled (exception path works)",
+          "passed": true,
+          "evidence": "Testing filled with inspection-based equivalence note, no 'I ran' chatter"
+        },
+        {
+          "text": "Type of change ticks only Refactor",
+          "passed": true,
+          "evidence": "[x] Refactor; others unticked"
+        },
+        {
+          "text": "template HTML comments removed",
+          "passed": true,
+          "evidence": "no HTML comments in output"
+        },
+        {
+          "text": "no commit enumeration, no tooling attribution",
+          "passed": true,
+          "evidence": "clean"
+        },
+        {
+          "text": "title is a single concise line under 72 chars",
+          "passed": false,
+          "evidence": "'refactor: consolidate per-method retry loops into a single with_retry helper' = 76 chars (>72)"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "new_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 58.1,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "body states perf regression, recompiled every call (body-only rationale)",
+          "passed": true,
+          "evidence": "'recompiling the same handful of patterns on every call - ~38% of request CPU'"
+        },
+        {
+          "text": "measured before/after from bodies",
+          "passed": true,
+          "evidence": "'p99 match latency from 4.2ms to 0.6ms'; 38% CPU"
+        },
+        {
+          "text": "why bounded at 512 (leak risk dynamic; ~380) from bodies",
+          "passed": true,
+          "evidence": "Risks: unbounded growth leaks for search-filter dynamic patterns; 512 above ~380 observed"
+        },
+        {
+          "text": "links PERF-204 (footer-only)",
+          "passed": true,
+          "evidence": "'Refs: PERF-204' in body"
+        },
+        {
+          "text": "no commit-list enumeration",
+          "passed": true,
+          "evidence": "Summary/Why/Key changes structure, no commit list"
+        },
+        {
+          "text": "no verification/tooling chatter",
+          "passed": true,
+          "evidence": "no 'I ran'/'tests pass'/'verified'"
+        },
+        {
+          "text": "does NOT invent Testing/Verification section",
+          "passed": true,
+          "evidence": "no Testing heading; default Summary/Why/Key/Risks/Review"
+        },
+        {
+          "text": "title <72 chars, present tense (CC prefix ok)",
+          "passed": true,
+          "evidence": "'perf(matcher): cache compiled regexes with a bounded LRU' ~52 chars"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 71.6,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "CC-style title under 72",
+          "passed": true,
+          "evidence": "'feat(booking): add explicit ... booking ...' <72"
+        },
+        {
+          "text": "links MED-481",
+          "passed": true,
+          "evidence": "'Closes MED-481'"
+        },
+        {
+          "text": "Key changes not per-commit",
+          "passed": true,
+          "evidence": "load-bearing bullets, not commit subjects"
+        },
+        {
+          "text": "review notes point to a concrete start file",
+          "passed": true,
+          "evidence": "'Start in src/booking/lock.py'"
+        },
+        {
+          "text": "no verification/tooling chatter",
+          "passed": true,
+          "evidence": "no 'I ran'/'tests pass'"
+        },
+        {
+          "text": "does NOT invent Testing section (no template)",
+          "passed": true,
+          "evidence": "default structure, no Testing heading"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 66.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "uses template headings exactly",
+          "passed": true,
+          "evidence": "Description / Type of change / Testing / Reviewer notes / Checklist"
+        },
+        {
+          "text": "Testing section IS filled (exception path works)",
+          "passed": true,
+          "evidence": "Testing filled with inspection-based equivalence note, no 'I ran' chatter"
+        },
+        {
+          "text": "Type of change ticks only Refactor",
+          "passed": true,
+          "evidence": "[x] Refactor; others unticked"
+        },
+        {
+          "text": "template HTML comments removed",
+          "passed": true,
+          "evidence": "no HTML comments in output"
+        },
+        {
+          "text": "no commit enumeration, no tooling attribution",
+          "passed": true,
+          "evidence": "clean"
+        },
+        {
+          "text": "title is a single concise line under 72 chars",
+          "passed": true,
+          "evidence": "'Consolidate per-method retry loops into a single with_retry helper' = 66 chars"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 65.4,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "body states perf regression, recompiled every call (body-only rationale)",
+          "passed": true,
+          "evidence": "'recompiling the same handful of patterns on every call - ~38% of request CPU'"
+        },
+        {
+          "text": "measured before/after from bodies",
+          "passed": true,
+          "evidence": "'p99 match latency from 4.2ms to 0.6ms'; 38% CPU"
+        },
+        {
+          "text": "why bounded at 512 (leak risk dynamic; ~380) from bodies",
+          "passed": true,
+          "evidence": "Risks: unbounded growth leaks for search-filter dynamic patterns; 512 above ~380 observed"
+        },
+        {
+          "text": "links PERF-204 (footer-only)",
+          "passed": true,
+          "evidence": "'Refs: PERF-204' in body"
+        },
+        {
+          "text": "no commit-list enumeration",
+          "passed": true,
+          "evidence": "Summary/Why/Key changes structure, no commit list"
+        },
+        {
+          "text": "no verification/tooling chatter",
+          "passed": true,
+          "evidence": "no 'I ran'/'tests pass'/'verified'"
+        },
+        {
+          "text": "does NOT invent Testing/Verification section",
+          "passed": true,
+          "evidence": "no Testing heading; default Summary/Why/Key/Risks/Review"
+        },
+        {
+          "text": "title <72 chars, present tense (CC prefix ok)",
+          "passed": true,
+          "evidence": "'perf(matcher): cache compiled regexes with a bounded LRU' ~52 chars"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "new_skill": {
+      "pass_rate": {
+        "mean": 0.9444,
+        "stddev": 0.0962,
+        "min": 0.8333,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 66.9333,
+        "stddev": 7.7216,
+        "min": 58.1,
+        "max": 72.4
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "old_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 67.6667,
+        "stddev": 3.4196,
+        "min": 65.4,
+        "max": 71.6
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "delta": {
+      "pass_rate": "-0.06",
+      "time_seconds": "-0.7",
+      "tokens": "+0"
+    }
+  },
+  "notes": [
+    "A/B is new (edited) pr vs old (HEAD) pr. new 94.4% vs old 100%, delta -0.06.",
+    "The delta is NOISE: the only differing assertion is eval-3's title length (new produced a 76-char title, old 66); unrelated to the commit-body or verification edits.",
+    "eval-4 (the body-rationale discriminator) is a TIE 8/8: the old skill already read the 2 commit bodies and surfaced 38% CPU, p99 4.2->0.6ms, PERF-204, and the 512/leak rationale. Fixture too small to stress the edit - a capable model reads bodies anyway on a short branch.",
+    "eval-3 confirms the verification-chatter exception works: the template's required Testing section is still filled under both versions; no no-template eval invented one.",
+    "Conclusion: edits are safe guardrails (no real regression) but show no measurable lift here because the strong baseline already complied. Body-reading value would surface on a large (8-10 commit) branch."
+  ]
+}

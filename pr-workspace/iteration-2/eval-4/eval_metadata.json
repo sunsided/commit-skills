@@ -1,0 +1,30 @@
+{
+  "eval_id": 4,
+  "eval_name": "commit-body-rationale-pr-body",
+  "assertions": [
+    {
+      "text": "Body states this fixes a performance regression (matcher recompiled patterns every call) - rationale only in commit bodies, not the diff"
+    },
+    {
+      "text": "Body surfaces a measured before/after (~38% CPU, or p99 4.2ms -> 0.6ms) from the commit bodies"
+    },
+    {
+      "text": "Body explains why the cache is bounded at 512 (leak risk for dynamic patterns; ~380 observed) from the commit bodies"
+    },
+    {
+      "text": "Body links the issue as PERF-204 (appears only in commit footers, not branch name or diff)"
+    },
+    {
+      "text": "Body does NOT enumerate the two commits as a commit list"
+    },
+    {
+      "text": "No verification/tooling chatter ('I ran', 'tests pass', 'verified', 'ran the benchmark', test output)"
+    },
+    {
+      "text": "Does NOT invent a Testing/Verification section (no PR template, no shown CONTRIBUTING rule)"
+    },
+    {
+      "text": "Title is plain imperative, under 72 chars, no Conventional Commits prefix"
+    }
+  ]
+}

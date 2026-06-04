@@ -1,0 +1,24 @@
+{
+  "eval_id": 3,
+  "eval_name": "templated-refactor-pr-body",
+  "assertions": [
+    {
+      "text": "Body uses the template's exact headings (Description, Type of change, Testing, Reviewer notes, Checklist)"
+    },
+    {
+      "text": "The Testing section IS filled (template requires it) - the verification-exception path still works"
+    },
+    {
+      "text": "Type of change ticks only the Refactor box"
+    },
+    {
+      "text": "Template HTML comments are removed"
+    },
+    {
+      "text": "No commit enumeration and no tooling attribution"
+    },
+    {
+      "text": "Title is plain imperative, under 72 chars"
+    }
+  ]
+}

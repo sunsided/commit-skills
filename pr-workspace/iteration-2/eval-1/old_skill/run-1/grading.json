@@ -1,0 +1,43 @@
+{
+  "expectations": [
+    {
+      "text": "CC-style title under 72",
+      "passed": true,
+      "evidence": "'feat(booking): add explicit ... booking ...' <72"
+    },
+    {
+      "text": "links MED-481",
+      "passed": true,
+      "evidence": "'Closes MED-481'"
+    },
+    {
+      "text": "Key changes not per-commit",
+      "passed": true,
+      "evidence": "load-bearing bullets, not commit subjects"
+    },
+    {
+      "text": "review notes point to a concrete start file",
+      "passed": true,
+      "evidence": "'Start in src/booking/lock.py'"
+    },
+    {
+      "text": "no verification/tooling chatter",
+      "passed": true,
+      "evidence": "no 'I ran'/'tests pass'"
+    },
+    {
+      "text": "does NOT invent Testing section (no template)",
+      "passed": true,
+      "evidence": "default structure, no Testing heading"
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "total": 6,
+    "pass_rate": 1.0
+  },
+  "timing": {
+    "total_duration_seconds": 71.6
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "expectations": [
+    {
+      "text": "body states perf regression, recompiled every call (body-only rationale)",
+      "passed": true,
+      "evidence": "'recompiling the same handful of patterns on every call - ~38% of request CPU'"
+    },
+    {
+      "text": "measured before/after from bodies",
+      "passed": true,
+      "evidence": "'p99 match latency from 4.2ms to 0.6ms'; 38% CPU"
+    },
+    {
+      "text": "why bounded at 512 (leak risk dynamic; ~380) from bodies",
+      "passed": true,
+      "evidence": "Risks: unbounded growth leaks for search-filter dynamic patterns; 512 above ~380 observed"
+    },
+    {
+      "text": "links PERF-204 (footer-only)",
+      "passed": true,
+      "evidence": "'Refs: PERF-204' in body"
+    },
+    {
+      "text": "no commit-list enumeration",
+      "passed": true,
+      "evidence": "Summary/Why/Key changes structure, no commit list"
+    },
+    {
+      "text": "no verification/tooling chatter",
+      "passed": true,
+      "evidence": "no 'I ran'/'tests pass'/'verified'"
+    },
+    {
+      "text": "does NOT invent Testing/Verification section",
+      "passed": true,
+      "evidence": "no Testing heading; default Summary/Why/Key/Risks/Review"
+    },
+    {
+      "text": "title <72 chars, present tense (CC prefix ok)",
+      "passed": true,
+      "evidence": "'perf(matcher): cache compiled regexes with a bounded LRU' ~52 chars"
+    }
+  ],
+  "summary": {
+    "passed": 8,
+    "failed": 0,
+    "total": 8,
+    "pass_rate": 1.0
+  },
+  "timing": {
+    "total_duration_seconds": 65.4
+  }
+}

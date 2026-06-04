@@ -1,0 +1,24 @@
+{
+  "eval_id": 1,
+  "eval_name": "feature-branch-pr-body",
+  "assertions": [
+    {
+      "text": "Title is Conventional-Commits style (e.g. feat(booking): ...), under 72 chars"
+    },
+    {
+      "text": "Body links MED-481"
+    },
+    {
+      "text": "Body has a Key changes list that is NOT a per-commit enumeration"
+    },
+    {
+      "text": "Body review notes point the reviewer to a concrete starting file"
+    },
+    {
+      "text": "No verification/tooling chatter ('I ran', 'tests pass', 'verified')"
+    },
+    {
+      "text": "Does NOT invent a Testing/Verification section (this fixture has no PR template)"
+    }
+  ]
+}
