@@ -1,0 +1,17 @@
+diff --git a/src/config.py b/src/config.py
+index e3a3b9a..75ca968 100644
+--- a/src/config.py
++++ b/src/config.py
+@@ -7,4 +7,11 @@ def parse_config(raw):
+     # raw is None when the config file is absent (see loader.read_optional).
+     if raw is None:
+         return dict(DEFAULT_CONFIG)
+-    return json.loads(raw)
++    try:
++        return json.loads(raw)
++    except json.JSONDecodeError as exc:
++        raise ValueError("config file is not valid JSON: %s" % exc) from exc
++
++
++def config_summary(cfg):
++    return "timeout=%s retries=%s" % (cfg["timeout"], cfg["retries"])

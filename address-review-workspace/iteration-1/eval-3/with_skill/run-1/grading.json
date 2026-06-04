@@ -1,0 +1,38 @@
+{
+  "expectations": [
+    {
+      "text": "average guarded vs empty (no ZeroDivisionError)",
+      "passed": true,
+      "evidence": "repo.diff: `if not values: raise ValueError(...)`"
+    },
+    {
+      "text": "fix commit follows Conventional Commits style",
+      "passed": true,
+      "evidence": "commit `fix(stats): raise ValueError on empty input in average`"
+    },
+    {
+      "text": "question reply cites bare SHA + frames as real bug",
+      "passed": true,
+      "evidence": "'it would have raised ZeroDivisionError ... Fixed in c391cbb.' bare"
+    },
+    {
+      "text": "praise gets NO reply (restraint)",
+      "passed": true,
+      "evidence": "Thread 2: 'no reply needed'"
+    },
+    {
+      "text": "no tooling chatter; gh not invoked, not pushed",
+      "passed": true,
+      "evidence": "clean; no gh/push"
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5,
+    "pass_rate": 1.0
+  },
+  "timing": {
+    "total_duration_seconds": 128.0
+  }
+}

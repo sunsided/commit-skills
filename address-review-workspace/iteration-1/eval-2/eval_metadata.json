@@ -1,0 +1,13 @@
+{
+  "eval_id": 2,
+  "eval_name": "pushback-on-wrong-suggestion",
+  "prompt": "Two review comments on src/config.py with opposite correct verdicts: one asks to delete a None guard that a caller in src/loader.py actually exercises (must be declined with evidence), the other flags a real unhandled JSONDecodeError (must be fixed). Reply to both, cite a bare short SHA for the fix, don't post or push.",
+  "assertions": [
+    {"text": "The `if raw is None:` guard and the DEFAULT_CONFIG fallback are STILL present in src/config.py after the run (the wrong suggestion was not applied)"},
+    {"text": "The reply to comment 1 declines the change and references the caller in src/loader.py (read_optional/load passing None) as evidence"},
+    {"text": "The json.loads call is wrapped to handle malformed JSON (try/except or equivalent) so it cannot crash on bad input"},
+    {"text": "The malformed-JSON fix is committed and its reply cites a short SHA as bare text, not in backticks"},
+    {"text": "Both review comments receive a drafted reply"},
+    {"text": "No tooling chatter or AI self-reference in the replies; gh is not invoked and the branch is not pushed"}
+  ]
+}

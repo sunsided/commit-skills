@@ -1,0 +1,48 @@
+{
+  "expectations": [
+    {
+      "text": "None guard + DEFAULT_CONFIG still present",
+      "passed": true,
+      "evidence": "keeps None branch"
+    },
+    {
+      "text": "decline references caller src/loader.py",
+      "passed": true,
+      "evidence": "cites read_optional/load passing None"
+    },
+    {
+      "text": "json.loads wrapped to handle malformed JSON",
+      "passed": true,
+      "evidence": "try/except -> DEFAULT_CONFIG"
+    },
+    {
+      "text": "malformed-JSON fix committed + bare SHA",
+      "passed": false,
+      "evidence": "backticked: 'fixed in `2660a38`'"
+    },
+    {
+      "text": "fix reply opens with 'Fixed in <sha>'",
+      "passed": false,
+      "evidence": "opens 'Good catch \u2014 fixed in `2660a38`' (not leading bare SHA)"
+    },
+    {
+      "text": "both comments get a reply",
+      "passed": true,
+      "evidence": "both replies"
+    },
+    {
+      "text": "no tooling chatter; gh not invoked, not pushed",
+      "passed": true,
+      "evidence": "clean"
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 2,
+    "total": 7,
+    "pass_rate": 0.7143
+  },
+  "timing": {
+    "total_duration_seconds": 169.7
+  }
+}

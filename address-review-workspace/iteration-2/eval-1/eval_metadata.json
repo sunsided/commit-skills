@@ -1,0 +1,34 @@
+{
+  "eval_id": 1,
+  "eval_name": "mixed-feedback-triage",
+  "prompt": "First run `bash /chaos/dev/mine/ai/commit-skills/fixtures/address-review/mixed-feedback.sh /tmp/eval-ar-mixed`, then `cd /tmp/eval-ar-mixed`. You are on branch `feat/cart-totals`. There is no live GitHub PR and no network \u2014 work from the review comments pasted below, which a reviewer left on `src/pricing.py`. Address them: fix what's valid as real commits in this repo (matching its commit style), and write the exact reply you would post to each thread. Do NOT run `gh` and do NOT push \u2014 instead output (a) your triage verdict per comment, (b) the commits you made with their short SHAs, and (c) the reply text for each thread.\n\nReview comments:\n1. On the `shipping = 0 if total > 5000 else 500` line: \"Defect: free shipping is supposed to kick in *at* $50.00, but `> 5000` charges shipping on an order of exactly 5000 cents. Should be `>=`.\"\n2. On the `for item in items:` loop body: \"nit: `total += item['price'] * item['qty']` duplicates `line_total(item)` right above \u2014 could just call it.\"\n3. On `cart_total`: \"Question: are these prices in cents or dollars?\"\n4. On `cart_total`: \"I'd rename this to `compute_total` for consistency with the rest of our codebase.\"",
+  "assertions": [
+    {
+      "text": "The shipping threshold is changed from `> 5000` to `>= 5000` in src/pricing.py"
+    },
+    {
+      "text": "The loop body in cart_total calls line_total(item) instead of duplicating the price*qty expression"
+    },
+    {
+      "text": "At least one new commit exists on the branch beyond the fixture's commits"
+    },
+    {
+      "text": "Each reply that reports a fix cites a short commit SHA as bare text, not wrapped in backticks"
+    },
+    {
+      "text": "Each fix reply opens with the disposition (begins with 'Fixed in <sha>'), rather than placing the SHA at the end"
+    },
+    {
+      "text": "The question about cents/dollars gets a reply-only answer (cents) with no code change made for it"
+    },
+    {
+      "text": "All four review comments receive a drafted reply"
+    },
+    {
+      "text": "No reply contains tooling chatter or AI self-reference (e.g. 'I ran the tests', 'as an AI', co-authored-by)"
+    },
+    {
+      "text": "`gh` is not invoked and the branch is not pushed"
+    }
+  ]
+}

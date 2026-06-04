@@ -1,0 +1,15 @@
+{
+  "eval_id": 1,
+  "eval_name": "mixed-feedback-triage",
+  "prompt": "Address a spread of review comments on src/pricing.py covering all triage kinds: a real defect (free-shipping boundary > vs >=), an agreeable nit (loop duplicates line_total), a genuine question (cents vs dollars), and a pure-taste rename opinion. Fix the valid ones as commits, reply to all four, cite bare short SHAs, don't post or push.",
+  "assertions": [
+    {"text": "The shipping threshold is changed from `> 5000` to `>= 5000` in src/pricing.py"},
+    {"text": "The loop body in cart_total calls line_total(item) instead of duplicating the price*qty expression"},
+    {"text": "At least one new commit exists on the branch beyond the fixture's commits"},
+    {"text": "Each reply that reports a fix cites a short commit SHA as bare text, not wrapped in backticks"},
+    {"text": "The question about cents/dollars gets a reply-only answer (cents) with no code change made for it"},
+    {"text": "All four review comments receive a drafted reply"},
+    {"text": "No reply contains tooling chatter or AI self-reference (e.g. 'I ran the tests', 'as an AI', co-authored-by)"},
+    {"text": "gh is not invoked and the branch is not pushed"}
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "expectations": [
+    {
+      "text": "average guarded vs empty (no ZeroDivisionError)",
+      "passed": true,
+      "evidence": "repo.diff guard raises ValueError; commit 7456a5c"
+    },
+    {
+      "text": "fix commit Conventional Commits style",
+      "passed": true,
+      "evidence": "fix(stats): guard average() against empty input"
+    },
+    {
+      "text": "question reply bare SHA + frames as real bug",
+      "passed": true,
+      "evidence": "'Fixed in 7456a5c. ... raised ZeroDivisionError' bare"
+    },
+    {
+      "text": "fix reply opens with 'Fixed in <sha>'",
+      "passed": true,
+      "evidence": "Thread1 'Fixed in 7456a5c. Good question \u2014 ...'"
+    },
+    {
+      "text": "praise gets NO reply (restraint)",
+      "passed": true,
+      "evidence": "Thread2 'No reply. ... non-actionable praise'"
+    },
+    {
+      "text": "no tooling chatter; gh not invoked, not pushed",
+      "passed": true,
+      "evidence": "clean"
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "total": 6,
+    "pass_rate": 1.0
+  },
+  "timing": {
+    "total_duration_seconds": 93.1
+  }
+}

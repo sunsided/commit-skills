@@ -1,0 +1,2 @@
+c391cbb fix(stats): raise ValueError on empty input in average
+ee0070c feat(stats): add median helper

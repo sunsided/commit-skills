@@ -1,0 +1,12 @@
+{
+  "eval_id": 3,
+  "eval_name": "question-hides-defect-and-praise",
+  "prompt": "A reviewer question ('what if values is empty?') on average() is really a ZeroDivisionError defect; a second comment is pure praise. The skill should investigate, fix the crash with a Conventional-Commits-style commit, reply to the question citing a bare short SHA, and post NO reply to the praise. Don't post or push.",
+  "assertions": [
+    {"text": "average() is guarded against an empty input so it no longer raises ZeroDivisionError (e.g. early return of 0 or None when len(values) == 0)"},
+    {"text": "The fix is committed and the commit subject follows Conventional Commits style (e.g. starts with `fix(` or `feat(`) to match the repo history"},
+    {"text": "The reply to the question cites a short SHA as bare text, not wrapped in backticks, and frames it as a real bug that was fixed"},
+    {"text": "The praise comment receives NO drafted reply (restraint), or is explicitly noted as needing none"},
+    {"text": "No tooling chatter or AI self-reference; gh is not invoked and the branch is not pushed"}
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "eval_id": 2,
+  "eval_name": "pushback-on-wrong-suggestion",
+  "prompt": "First run `bash /chaos/dev/mine/ai/commit-skills/fixtures/address-review/pushback.sh /tmp/eval-ar-push`, then `cd /tmp/eval-ar-push`. You are on branch `feat/config-loader`. No live PR, no network \u2014 work from the pasted comments. Fix what's valid as real commits (match the repo commit style), push nothing, run no `gh`. Output your triage verdict per comment, the commits with short SHAs, and the exact reply text per thread.\n\nReview comments on `src/config.py`:\n1. On `if raw is None:` in `parse_config`: \"This None check looks dead \u2014 callers always hand us a JSON string. Drop the branch and the DEFAULT_CONFIG fallback.\"\n2. On `return json.loads(raw)`: \"If the file contains malformed JSON this raises an unhandled JSONDecodeError and takes the service down on boot. Please handle it.\"",
+  "assertions": [
+    {
+      "text": "The `if raw is None:` guard and the DEFAULT_CONFIG fallback are STILL present in src/config.py after the run (the wrong suggestion was not applied)"
+    },
+    {
+      "text": "The reply to comment 1 declines the change and references the caller in src/loader.py (read_optional/load passing None) as evidence"
+    },
+    {
+      "text": "The json.loads call is wrapped to handle malformed JSON (try/except or equivalent) so it cannot crash on bad input"
+    },
+    {
+      "text": "The malformed-JSON fix is committed and its reply cites a short SHA as bare text, not in backticks"
+    },
+    {
+      "text": "The fix reply opens with the disposition (begins with 'Fixed in <sha>'), not the SHA at the end"
+    },
+    {
+      "text": "Both review comments receive a drafted reply"
+    },
+    {
+      "text": "No tooling chatter or AI self-reference in the replies; `gh` is not invoked and the branch is not pushed"
+    }
+  ]
+}

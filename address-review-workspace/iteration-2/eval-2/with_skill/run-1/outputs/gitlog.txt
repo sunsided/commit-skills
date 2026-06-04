@@ -1,0 +1,2 @@
+452a0b9 Handle malformed JSON in parse_config
+cdccd1d Add config summary helper

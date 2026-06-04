@@ -1,0 +1,22 @@
+diff --git a/src/stats.py b/src/stats.py
+index fd27772..da80954 100644
+--- a/src/stats.py
++++ b/src/stats.py
+@@ -1,6 +1,17 @@
+ def average(values):
++    if not values:
++        raise ValueError("average() requires at least one value")
+     return sum(values) / len(values)
+ 
+ 
+ def total(values):
+     return sum(values)
++
++
++def median(values):
++    s = sorted(values)
++    n = len(s)
++    mid = n // 2
++    if n % 2:
++        return s[mid]
++    return (s[mid - 1] + s[mid]) / 2

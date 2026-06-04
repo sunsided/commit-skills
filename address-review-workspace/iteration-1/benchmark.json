@@ -1,0 +1,369 @@
+{
+  "metadata": {
+    "skill_name": "address-review",
+    "skill_path": "/chaos/dev/mine/ai/commit-skills/address-review",
+    "executor_model": "claude (subagent default)",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-06-04T19:10:44Z",
+    "evals_run": [
+      1,
+      2,
+      3
+    ],
+    "runs_per_configuration": 3
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 153.7,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "shipping threshold > 5000 -> >= 5000",
+          "passed": true,
+          "evidence": "repo.diff: `shipping = 0 if total >= 5000 else 500`"
+        },
+        {
+          "text": "loop calls line_total(item)",
+          "passed": true,
+          "evidence": "repo.diff: `total += line_total(item)`"
+        },
+        {
+          "text": "at least one new commit",
+          "passed": true,
+          "evidence": "gitlog: 5d17ead, 249f1a7"
+        },
+        {
+          "text": "fix replies cite bare short SHA, not backticked",
+          "passed": true,
+          "evidence": "'Fixed in 5d17ead.' / 'Fixed in 249f1a7.' \u2014 bare"
+        },
+        {
+          "text": "question reply-only, cents, no code change",
+          "passed": true,
+          "evidence": "Thread 3 reply 'Cents.', no commit for it"
+        },
+        {
+          "text": "all four comments get a reply",
+          "passed": true,
+          "evidence": "result.md has 4 reply blocks"
+        },
+        {
+          "text": "no tooling chatter / AI self-reference",
+          "passed": true,
+          "evidence": "replies clean"
+        },
+        {
+          "text": "gh not invoked, branch not pushed",
+          "passed": true,
+          "evidence": "no gh; no remote/push"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 158.6,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "None guard + DEFAULT_CONFIG still present (wrong suggestion not applied)",
+          "passed": true,
+          "evidence": "repo.diff keeps `if raw is None: return dict(DEFAULT_CONFIG)`"
+        },
+        {
+          "text": "decline references caller in src/loader.py as evidence",
+          "passed": true,
+          "evidence": "reply cites src/loader.py:8 and :15 read_optional/load passing None"
+        },
+        {
+          "text": "json.loads wrapped to handle malformed JSON",
+          "passed": true,
+          "evidence": "try/except json.JSONDecodeError -> ConfigError"
+        },
+        {
+          "text": "malformed-JSON fix committed + bare SHA",
+          "passed": true,
+          "evidence": "commit 6b5765b; 'Fixed in 6b5765b.' bare"
+        },
+        {
+          "text": "both comments get a reply",
+          "passed": true,
+          "evidence": "Thread 1 + Thread 2 replies present"
+        },
+        {
+          "text": "no tooling chatter; gh not invoked, not pushed",
+          "passed": true,
+          "evidence": "clean; no gh/push"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 128.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "average guarded vs empty (no ZeroDivisionError)",
+          "passed": true,
+          "evidence": "repo.diff: `if not values: raise ValueError(...)`"
+        },
+        {
+          "text": "fix commit follows Conventional Commits style",
+          "passed": true,
+          "evidence": "commit `fix(stats): raise ValueError on empty input in average`"
+        },
+        {
+          "text": "question reply cites bare SHA + frames as real bug",
+          "passed": true,
+          "evidence": "'it would have raised ZeroDivisionError ... Fixed in c391cbb.' bare"
+        },
+        {
+          "text": "praise gets NO reply (restraint)",
+          "passed": true,
+          "evidence": "Thread 2: 'no reply needed'"
+        },
+        {
+          "text": "no tooling chatter; gh not invoked, not pushed",
+          "passed": true,
+          "evidence": "clean; no gh/push"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.875,
+        "passed": 7,
+        "failed": 1,
+        "total": 8,
+        "time_seconds": 187.8,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "shipping threshold > 5000 -> >= 5000",
+          "passed": true,
+          "evidence": "repo.diff: `>= 5000`"
+        },
+        {
+          "text": "loop calls line_total(item)",
+          "passed": true,
+          "evidence": "repo.diff: `total += line_total(item)`"
+        },
+        {
+          "text": "at least one new commit",
+          "passed": true,
+          "evidence": "gitlog: 0883fb1, d385cc2"
+        },
+        {
+          "text": "fix replies cite bare short SHA, not backticked",
+          "passed": false,
+          "evidence": "Replies wrap SHA in backticks: 'in commit `0883fb1`', 'in commit `d385cc2`'"
+        },
+        {
+          "text": "question reply-only, cents, no code change",
+          "passed": true,
+          "evidence": "Thread 3 'Cents - all money ... integer cents', no commit"
+        },
+        {
+          "text": "all four comments get a reply",
+          "passed": true,
+          "evidence": "4 reply blocks"
+        },
+        {
+          "text": "no tooling chatter / AI self-reference",
+          "passed": true,
+          "evidence": "no 'as an AI'/'ran tests' (mentions manual verification only)"
+        },
+        {
+          "text": "gh not invoked, branch not pushed",
+          "passed": true,
+          "evidence": "no gh/push"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.8333,
+        "passed": 5,
+        "failed": 1,
+        "total": 6,
+        "time_seconds": 169.7,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "None guard + DEFAULT_CONFIG still present (wrong suggestion not applied)",
+          "passed": true,
+          "evidence": "repo.diff keeps None branch"
+        },
+        {
+          "text": "decline references caller in src/loader.py as evidence",
+          "passed": true,
+          "evidence": "reply cites read_optional/load passing None"
+        },
+        {
+          "text": "json.loads wrapped to handle malformed JSON",
+          "passed": true,
+          "evidence": "try/except json.JSONDecodeError -> DEFAULT_CONFIG"
+        },
+        {
+          "text": "malformed-JSON fix committed + bare SHA",
+          "passed": false,
+          "evidence": "commit 2660a38 made, but reply backticks it: 'fixed in `2660a38`'"
+        },
+        {
+          "text": "both comments get a reply",
+          "passed": true,
+          "evidence": "Thread 1 + Thread 2 replies present"
+        },
+        {
+          "text": "no tooling chatter; gh not invoked, not pushed",
+          "passed": true,
+          "evidence": "clean; no gh/push"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.6,
+        "passed": 3,
+        "failed": 2,
+        "total": 5,
+        "time_seconds": 126.1,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "average guarded vs empty (no ZeroDivisionError)",
+          "passed": true,
+          "evidence": "repo.diff: `if not values: raise ValueError(...)`"
+        },
+        {
+          "text": "fix commit follows Conventional Commits style",
+          "passed": true,
+          "evidence": "commit `fix(stats): guard average against empty input`"
+        },
+        {
+          "text": "question reply cites bare SHA + frames as real bug",
+          "passed": false,
+          "evidence": "frames bug correctly but backticks SHA: 'Fixed in `ce87c43`'"
+        },
+        {
+          "text": "praise gets NO reply (restraint)",
+          "passed": false,
+          "evidence": "Thread 2 reply posted: 'Thanks! \ud83d\ude4f'"
+        },
+        {
+          "text": "no tooling chatter; gh not invoked, not pushed",
+          "passed": true,
+          "evidence": "clean; no gh/push"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 146.7667,
+        "stddev": 16.436,
+        "min": 128.0,
+        "max": 158.6
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.7694,
+        "stddev": 0.1482,
+        "min": 0.6,
+        "max": 0.875
+      },
+      "time_seconds": {
+        "mean": 161.2,
+        "stddev": 31.7161,
+        "min": 126.1,
+        "max": 187.8
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.23",
+      "time_seconds": "-14.4",
+      "tokens": "+0"
+    }
+  },
+  "notes": [
+    "Skill lift concentrates in TWO assertions baseline models miss by reflex: bare-SHA citation (with-skill 3/3 wrote 'Fixed in <sha>'; baseline 3/3 wrapped the SHA in backticks, which kills GitHub's commit auto-link) and praise restraint (eval-3 baseline replied 'Thanks!' to '\ud83d\udc4d'; with-skill posted no reply).",
+    "Non-discriminating assertions on this set: fixing the real defect, declining the wrong suggestion WITH caller evidence, and not running gh/push all passed in BOTH configs. The executor models are strong enough to get the judgment right unaided; the skill's measurable edge here is GitHub-mechanics discipline + reply etiquette, not triage IQ. These guardrails may still matter on weaker models or messier PRs.",
+    "Single run per configuration -> stddev is 0 and variance is unknown. The bare-SHA and praise deltas are crisp and mechanism-backed, but a 3-run/config pass would confirm they're stable rather than lucky.",
+    "No time/token tradeoff worth noting: with-skill was actually slightly faster on average (acted decisively after reading refs) while baselines spent turns hand-verifying arithmetic.",
+    "Coverage gap: every eval forbids gh/push, so the live fetch + in-thread reply + push-before-reply ordering path is UNTESTED end-to-end. Worth a manual smoke test against a real throwaway PR before trusting that half of the skill."
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "expectations": [
+    {
+      "text": "shipping threshold > 5000 -> >= 5000",
+      "passed": true,
+      "evidence": "repo.diff: `>= 5000`"
+    },
+    {
+      "text": "loop calls line_total(item)",
+      "passed": true,
+      "evidence": "repo.diff: `total += line_total(item)`"
+    },
+    {
+      "text": "at least one new commit",
+      "passed": true,
+      "evidence": "gitlog: 0883fb1, d385cc2"
+    },
+    {
+      "text": "fix replies cite bare short SHA, not backticked",
+      "passed": false,
+      "evidence": "Replies wrap SHA in backticks: 'in commit `0883fb1`', 'in commit `d385cc2`'"
+    },
+    {
+      "text": "question reply-only, cents, no code change",
+      "passed": true,
+      "evidence": "Thread 3 'Cents - all money ... integer cents', no commit"
+    },
+    {
+      "text": "all four comments get a reply",
+      "passed": true,
+      "evidence": "4 reply blocks"
+    },
+    {
+      "text": "no tooling chatter / AI self-reference",
+      "passed": true,
+      "evidence": "no 'as an AI'/'ran tests' (mentions manual verification only)"
+    },
+    {
+      "text": "gh not invoked, branch not pushed",
+      "passed": true,
+      "evidence": "no gh/push"
+    }
+  ],
+  "summary": {
+    "passed": 7,
+    "failed": 1,
+    "total": 8,
+    "pass_rate": 0.875
+  },
+  "timing": {
+    "total_duration_seconds": 187.8
+  }
+}

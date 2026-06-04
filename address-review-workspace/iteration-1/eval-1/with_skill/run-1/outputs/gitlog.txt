@@ -1,0 +1,3 @@
+249f1a7 Reuse line_total in cart_total
+5d17ead Apply free shipping at exactly $50.00
+6469c25 Add price formatter

@@ -1,0 +1,3 @@
+7141b85 Use line_total in cart_total loop
+f9ff0f5 Fix free shipping threshold to include exactly $50
+13e7cbe Add price formatter

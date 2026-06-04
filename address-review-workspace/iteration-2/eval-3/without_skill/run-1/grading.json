@@ -1,0 +1,43 @@
+{
+  "expectations": [
+    {
+      "text": "average guarded vs empty (no ZeroDivisionError)",
+      "passed": true,
+      "evidence": "guard raises ValueError; commit ce87c43"
+    },
+    {
+      "text": "fix commit Conventional Commits style",
+      "passed": true,
+      "evidence": "fix(stats): guard average against empty input"
+    },
+    {
+      "text": "question reply bare SHA + frames as real bug",
+      "passed": false,
+      "evidence": "backticked: 'Fixed in `ce87c43`'"
+    },
+    {
+      "text": "fix reply opens with 'Fixed in <sha>'",
+      "passed": false,
+      "evidence": "opens 'Good catch. With an empty sequence...', SHA mid"
+    },
+    {
+      "text": "praise gets NO reply (restraint)",
+      "passed": false,
+      "evidence": "Thread2 reply 'Thanks! \ud83d\ude4f' posted"
+    },
+    {
+      "text": "no tooling chatter; gh not invoked, not pushed",
+      "passed": true,
+      "evidence": "clean"
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 3,
+    "total": 6,
+    "pass_rate": 0.5
+  },
+  "timing": {
+    "total_duration_seconds": 126.1
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "expectations": [
+    {
+      "text": "shipping > 5000 -> >= 5000",
+      "passed": true,
+      "evidence": "repo.diff >= 5000"
+    },
+    {
+      "text": "loop calls line_total(item)",
+      "passed": true,
+      "evidence": "total += line_total(item)"
+    },
+    {
+      "text": "at least one new commit",
+      "passed": true,
+      "evidence": "0883fb1, d385cc2"
+    },
+    {
+      "text": "fix replies cite bare short SHA, not backticked",
+      "passed": false,
+      "evidence": "backticked: 'in commit `0883fb1`', 'commit `d385cc2`'"
+    },
+    {
+      "text": "each fix reply opens with 'Fixed in <sha>', not SHA at end",
+      "passed": false,
+      "evidence": "Thread1 opens 'Good catch...', SHA mid/late"
+    },
+    {
+      "text": "question reply-only cents, no code change",
+      "passed": true,
+      "evidence": "Thread3 'Cents'"
+    },
+    {
+      "text": "all four comments get a reply",
+      "passed": true,
+      "evidence": "4 replies"
+    },
+    {
+      "text": "no tooling chatter / AI self-reference",
+      "passed": true,
+      "evidence": "manual verification mention only"
+    },
+    {
+      "text": "gh not invoked, not pushed",
+      "passed": true,
+      "evidence": "no gh/push"
+    }
+  ],
+  "summary": {
+    "passed": 7,
+    "failed": 2,
+    "total": 9,
+    "pass_rate": 0.7778
+  },
+  "timing": {
+    "total_duration_seconds": 187.8
+  }
+}

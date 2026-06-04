@@ -1,0 +1,19 @@
+diff --git a/src/pricing.py b/src/pricing.py
+index d7fc961..e0a57c3 100644
+--- a/src/pricing.py
++++ b/src/pricing.py
+@@ -7,7 +7,11 @@ def line_total(item):
+ def cart_total(items):
+     total = 0
+     for item in items:
+-        total += item["price"] * item["qty"]
+-    # Free shipping over $50.00; otherwise a flat $5.00.
+-    shipping = 0 if total > 5000 else 500
++        total += line_total(item)
++    # Free shipping at $50.00 and up; otherwise a flat $5.00.
++    shipping = 0 if total >= 5000 else 500
+     return total + shipping
++
++
++def format_price(cents):
++    return "$%0.2f" % (cents / 100)

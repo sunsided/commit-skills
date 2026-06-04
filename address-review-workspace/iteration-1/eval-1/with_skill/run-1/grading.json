@@ -1,0 +1,53 @@
+{
+  "expectations": [
+    {
+      "text": "shipping threshold > 5000 -> >= 5000",
+      "passed": true,
+      "evidence": "repo.diff: `shipping = 0 if total >= 5000 else 500`"
+    },
+    {
+      "text": "loop calls line_total(item)",
+      "passed": true,
+      "evidence": "repo.diff: `total += line_total(item)`"
+    },
+    {
+      "text": "at least one new commit",
+      "passed": true,
+      "evidence": "gitlog: 5d17ead, 249f1a7"
+    },
+    {
+      "text": "fix replies cite bare short SHA, not backticked",
+      "passed": true,
+      "evidence": "'Fixed in 5d17ead.' / 'Fixed in 249f1a7.' \u2014 bare"
+    },
+    {
+      "text": "question reply-only, cents, no code change",
+      "passed": true,
+      "evidence": "Thread 3 reply 'Cents.', no commit for it"
+    },
+    {
+      "text": "all four comments get a reply",
+      "passed": true,
+      "evidence": "result.md has 4 reply blocks"
+    },
+    {
+      "text": "no tooling chatter / AI self-reference",
+      "passed": true,
+      "evidence": "replies clean"
+    },
+    {
+      "text": "gh not invoked, branch not pushed",
+      "passed": true,
+      "evidence": "no gh; no remote/push"
+    }
+  ],
+  "summary": {
+    "passed": 8,
+    "failed": 0,
+    "total": 8,
+    "pass_rate": 1.0
+  },
+  "timing": {
+    "total_duration_seconds": 153.7
+  }
+}

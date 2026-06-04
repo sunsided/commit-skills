@@ -1,0 +1,18 @@
+diff --git a/src/config.py b/src/config.py
+index e3a3b9a..ceb12d7 100644
+--- a/src/config.py
++++ b/src/config.py
+@@ -7,4 +7,12 @@ def parse_config(raw):
+     # raw is None when the config file is absent (see loader.read_optional).
+     if raw is None:
+         return dict(DEFAULT_CONFIG)
+-    return json.loads(raw)
++    try:
++        return json.loads(raw)
++    except json.JSONDecodeError:
++        # Malformed config must not crash the service on boot; fall back to defaults.
++        return dict(DEFAULT_CONFIG)
++
++
++def config_summary(cfg):
++    return "timeout=%s retries=%s" % (cfg["timeout"], cfg["retries"])

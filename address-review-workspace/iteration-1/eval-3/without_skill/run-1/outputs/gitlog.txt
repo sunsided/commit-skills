@@ -1,0 +1,2 @@
+ce87c43 fix(stats): guard average against empty input
+7f281e6 feat(stats): add median helper

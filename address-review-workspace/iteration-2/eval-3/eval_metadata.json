@@ -1,0 +1,25 @@
+{
+  "eval_id": 3,
+  "eval_name": "question-hides-defect-and-praise",
+  "prompt": "First run `bash /chaos/dev/mine/ai/commit-skills/fixtures/address-review/question-and-praise.sh /tmp/eval-ar-q`, then `cd /tmp/eval-ar-q`. You are on branch `feat/stats-helpers`. No live PR, no network \u2014 work from the pasted comments. Fix what's valid as real commits (match the repo's commit style), run no `gh`, push nothing. Output your triage verdict per comment, the commits with short SHAs, and the exact reply text per thread (or note explicitly when a comment needs no reply).\n\nReview comments on `src/stats.py`:\n1. On `return sum(values) / len(values)` in `average`: \"Question: what happens if `values` is empty here?\"\n2. On the module overall: \"Nice, clean little module \ud83d\udc4d\"",
+  "assertions": [
+    {
+      "text": "average() is guarded against an empty input so it no longer raises ZeroDivisionError (e.g. early return of 0 or None when len(values) == 0)"
+    },
+    {
+      "text": "The fix is committed and the commit subject follows Conventional Commits style (e.g. starts with `fix(` or `feat(`) to match the repo history"
+    },
+    {
+      "text": "The reply to the question cites a short SHA as bare text, not wrapped in backticks, and frames it as a real bug that was fixed"
+    },
+    {
+      "text": "The fix reply opens with the disposition (begins with 'Fixed in <sha>'), not the SHA at the end"
+    },
+    {
+      "text": "The praise comment receives NO drafted reply (restraint), or is explicitly noted as needing none"
+    },
+    {
+      "text": "No tooling chatter or AI self-reference; `gh` is not invoked and the branch is not pushed"
+    }
+  ]
+}

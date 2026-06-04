@@ -1,0 +1,2 @@
+6b5765b Handle malformed config JSON
+a0f636e Add config summary helper
