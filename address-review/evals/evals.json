@@ -1,0 +1,54 @@
+{
+  "skill_name": "address-review",
+  "evals": [
+    {
+      "id": 1,
+      "name": "mixed-feedback-triage",
+      "prompt": "First run `bash /chaos/dev/mine/ai/commit-skills/fixtures/address-review/mixed-feedback.sh /tmp/eval-ar-mixed`, then `cd /tmp/eval-ar-mixed`. You are on branch `feat/cart-totals`. There is no live GitHub PR and no network — work from the review comments pasted below, which a reviewer left on `src/pricing.py`. Address them: fix what's valid as real commits in this repo (matching its commit style), and write the exact reply you would post to each thread. Do NOT run `gh` and do NOT push — instead output (a) your triage verdict per comment, (b) the commits you made with their short SHAs, and (c) the reply text for each thread.\n\nReview comments:\n1. On the `shipping = 0 if total > 5000 else 500` line: \"Defect: free shipping is supposed to kick in *at* $50.00, but `> 5000` charges shipping on an order of exactly 5000 cents. Should be `>=`.\"\n2. On the `for item in items:` loop body: \"nit: `total += item['price'] * item['qty']` duplicates `line_total(item)` right above — could just call it.\"\n3. On `cart_total`: \"Question: are these prices in cents or dollars?\"\n4. On `cart_total`: \"I'd rename this to `compute_total` for consistency with the rest of our codebase.\"",
+      "expected_output": "Four comments triaged. Comment 1 (defect) and comment 2 (agreeable nit) are FIXED in code: `> 5000` becomes `>= 5000`, and the loop body calls `line_total(item)`. Fixes are committed (one or two commits, plain-imperative messages matching repo style); each fix reply cites the commit's short SHA as BARE text (e.g. `Fixed in 4f2a1c8`), never wrapped in backticks. Comment 3 (question) is reply-only: a short answer that prices are in cents — no code change for it. Comment 4 (opinion) is reply-only OR a cheap rename, either is acceptable, but if declined it gives a brief reason. Every one of the four comments has a reply drafted. No reply invents a problem; no tooling chatter ('I ran tests', 'as an AI'); `gh` is not run and the branch is not pushed.",
+      "files": [],
+      "assertions": [
+        {"text": "The shipping threshold is changed from `> 5000` to `>= 5000` in src/pricing.py"},
+        {"text": "The loop body in cart_total calls line_total(item) instead of duplicating the price*qty expression"},
+        {"text": "At least one new commit exists on the branch beyond the fixture's commits"},
+        {"text": "Each reply that reports a fix cites a short commit SHA as bare text, not wrapped in backticks"},
+        {"text": "Each fix reply opens with the disposition (begins with 'Fixed in <sha>'), rather than placing the SHA at the end"},
+        {"text": "The question about cents/dollars gets a reply-only answer (cents) with no code change made for it"},
+        {"text": "All four review comments receive a drafted reply"},
+        {"text": "No reply contains tooling chatter or AI self-reference (e.g. 'I ran the tests', 'as an AI', co-authored-by)"},
+        {"text": "`gh` is not invoked and the branch is not pushed"}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "pushback-on-wrong-suggestion",
+      "prompt": "First run `bash /chaos/dev/mine/ai/commit-skills/fixtures/address-review/pushback.sh /tmp/eval-ar-push`, then `cd /tmp/eval-ar-push`. You are on branch `feat/config-loader`. No live PR, no network — work from the pasted comments. Fix what's valid as real commits (match the repo commit style), push nothing, run no `gh`. Output your triage verdict per comment, the commits with short SHAs, and the exact reply text per thread.\n\nReview comments on `src/config.py`:\n1. On `if raw is None:` in `parse_config`: \"This None check looks dead — callers always hand us a JSON string. Drop the branch and the DEFAULT_CONFIG fallback.\"\n2. On `return json.loads(raw)`: \"If the file contains malformed JSON this raises an unhandled JSONDecodeError and takes the service down on boot. Please handle it.\"",
+      "expected_output": "Two comments, opposite verdicts. Comment 1 is DECLINED (reply-only, no code change): the `raw is None` guard stays, because `src/loader.py` (read_optional -> load) passes None when the config file is absent. The reply pushes back politely and cites that caller as evidence; the guard and DEFAULT_CONFIG fallback are still present in src/config.py after the run. Comment 2 is a real defect and is FIXED: json.loads is wrapped so malformed JSON doesn't crash boot (try/except returning the default or raising a clear error), committed, and the reply cites the short SHA as bare text. Both comments get a reply. No tooling chatter; `gh` not run; branch not pushed.",
+      "files": [],
+      "assertions": [
+        {"text": "The `if raw is None:` guard and the DEFAULT_CONFIG fallback are STILL present in src/config.py after the run (the wrong suggestion was not applied)"},
+        {"text": "The reply to comment 1 declines the change and references the caller in src/loader.py (read_optional/load passing None) as evidence"},
+        {"text": "The json.loads call is wrapped to handle malformed JSON (try/except or equivalent) so it cannot crash on bad input"},
+        {"text": "The malformed-JSON fix is committed and its reply cites a short SHA as bare text, not in backticks"},
+        {"text": "The fix reply opens with the disposition (begins with 'Fixed in <sha>'), not the SHA at the end"},
+        {"text": "Both review comments receive a drafted reply"},
+        {"text": "No tooling chatter or AI self-reference in the replies; `gh` is not invoked and the branch is not pushed"}
+      ]
+    },
+    {
+      "id": 3,
+      "name": "question-hides-defect-and-praise",
+      "prompt": "First run `bash /chaos/dev/mine/ai/commit-skills/fixtures/address-review/question-and-praise.sh /tmp/eval-ar-q`, then `cd /tmp/eval-ar-q`. You are on branch `feat/stats-helpers`. No live PR, no network — work from the pasted comments. Fix what's valid as real commits (match the repo's commit style), run no `gh`, push nothing. Output your triage verdict per comment, the commits with short SHAs, and the exact reply text per thread (or note explicitly when a comment needs no reply).\n\nReview comments on `src/stats.py`:\n1. On `return sum(values) / len(values)` in `average`: \"Question: what happens if `values` is empty here?\"\n2. On the module overall: \"Nice, clean little module 👍\"",
+      "expected_output": "Comment 1 is a question that turns out to be a defect: an empty list makes `average` raise ZeroDivisionError. The skill investigates, FIXES it (guards the empty case, e.g. returns 0 or None before dividing), commits in Conventional Commits style to match repo history (e.g. `fix(stats): ...`), and replies that it was a real gap, citing the short SHA as bare text. Comment 2 is praise and gets NO drafted reply (the skill explicitly notes praise needs no reply, or simply leaves it without one). `gh` not run; branch not pushed; no tooling chatter.",
+      "files": [],
+      "assertions": [
+        {"text": "average() is guarded against an empty input so it no longer raises ZeroDivisionError (e.g. early return of 0 or None when len(values) == 0)"},
+        {"text": "The fix is committed and the commit subject follows Conventional Commits style (e.g. starts with `fix(` or `feat(`) to match the repo history"},
+        {"text": "The reply to the question cites a short SHA as bare text, not wrapped in backticks, and frames it as a real bug that was fixed"},
+        {"text": "The fix reply opens with the disposition (begins with 'Fixed in <sha>'), not the SHA at the end"},
+        {"text": "The praise comment receives NO drafted reply (restraint), or is explicitly noted as needing none"},
+        {"text": "No tooling chatter or AI self-reference; `gh` is not invoked and the branch is not pushed"}
+      ]
+    }
+  ]
+}

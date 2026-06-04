@@ -1,0 +1,20 @@
+{
+  "metadata": {
+    "skill_name": "address-review",
+    "skill_path": "/chaos/dev/mine/ai/commit-skills/address-review",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-06-04T19:21:58Z",
+    "evals_run": [],
+    "runs_per_configuration": 3
+  },
+  "runs": [],
+  "run_summary": {
+    "delta": {
+      "pass_rate": "+0.00",
+      "time_seconds": "+0.0",
+      "tokens": "+0"
+    }
+  },
+  "notes": []
+}

@@ -1,0 +1,23 @@
+[
+  {"query": "the reviewer dropped like 8 comments on my PR (#231, the rate-limiter one) — can you go through them, fix the ones that are actually bugs, and reply in the threads?", "should_trigger": true},
+  {"query": "address the requested changes on the feature/checkout branch's pull request and cite the fix commits in your replies", "should_trigger": true},
+  {"query": "coderabbit left a wall of nits on my PR, handle the ones that matter and push back on the noise", "should_trigger": true},
+  {"query": "my tech lead reviewed the auth refactor and asked a couple questions plus wants two things changed. sort it out and respond to each", "should_trigger": true},
+  {"query": "someone requested changes on github — fix what's valid, answer the questions, and don't resolve the threads", "should_trigger": true},
+  {"query": "go through the open review threads on my PR and knock them out: fix plus reply with the short sha", "should_trigger": true},
+  {"query": "i pasted the three review comments below. fix the real one, decline the bad suggestion with a reason, and draft the replies for me to post", "should_trigger": true},
+  {"query": "reviewer thinks my retry loop is wrong and left a nit about naming. figure out which to apply and reply in the PR", "should_trigger": true},
+  {"query": "can you deal with the PR feedback on #77 before standup — fixes committed and replies posted", "should_trigger": true},
+  {"query": "respond to the code review on my branch; the bug they flagged is real, fix it and reply that it's done", "should_trigger": true},
+
+  {"query": "review my PR #22 and tell me what's broken before I send it for human eyes", "should_trigger": false},
+  {"query": "write up a code review of the database migration branch for me", "should_trigger": false},
+  {"query": "open a pull request for this branch with a solid description and review notes", "should_trigger": false},
+  {"query": "summarize the discussion and decisions on PR #88, I don't have time to read all 40 comments", "should_trigger": false},
+  {"query": "cargo clippy is throwing 12 warnings on the parser module, clean them up", "should_trigger": false},
+  {"query": "respond to this email from the reviewer asking about the API design tradeoffs", "should_trigger": false},
+  {"query": "reply to the comments on the notion doc about the onboarding flow", "should_trigger": false},
+  {"query": "resolve the merge conflicts on my PR branch against main", "should_trigger": false},
+  {"query": "add comments to this gnarly regex function so the next person understands it", "should_trigger": false},
+  {"query": "commit my staged changes with a conventional commit message", "should_trigger": false}
+]
