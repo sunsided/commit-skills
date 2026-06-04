@@ -20,6 +20,23 @@
       "name": "templated-refactor-pr-body",
       "prompt": "First, run `bash /home/mmayer/dev/mine/ai/commit-skills/fixtures/pr/templated-repo.sh /tmp/eval-pr-template` to set up a refactor branch with a PR template in the repo. Then `cd /tmp/eval-pr-template`. The branch `refactor/consolidate-retry` has two commits replacing three duplicated retry blocks with a single `with_retry` helper. The repo has `.github/pull_request_template.md` defining specific headings (Description, Type of change, Testing, Reviewer notes, Checklist). Draft a pull request title and body to open against main. Output only title and body as text.",
       "expected_output": "Plain imperative title (matching repo style) under 72 chars, e.g. `Refactor inline retry loops into a single helper`. Body uses the template's exact headings: Description, Type of change (with 'Refactor (no behavior change)' ticked), Testing, Reviewer notes, Checklist. Description emphasizes behavior is unchanged. Type of change has only the refactor box ticked. Testing notes the existing tests cover the call sites. Reviewer notes guide to src/retry.py first then the call-site migration. Checklist ticks only items that are honestly done (CHANGELOG was updated; no new tests were required). HTML comments from the template should be removed. NO commit list, NO tooling references."
+    },
+    {
+      "id": 4,
+      "name": "commit-body-rationale-pr-body",
+      "prompt": "First run `bash /chaos/dev/mine/ai/commit-skills/fixtures/pr/body-rich.sh /tmp/eval-pr-bodyrich`, then `cd /tmp/eval-pr-bodyrich`. The branch `perf/regex-cache` is two commits ahead of main. The diff just shows a regex cache being added and then LRU-bounded at 512, but the *reasoning* (a profiled performance regression, the measured before/after, why the cache is bounded at 512, and the issue id) lives only in the commit message bodies, not in the branch name or the diff. The repo has no PR template. Draft a pull request title and body to open against main. Output only the title and body as text; do not run `gh`.",
+      "expected_output": "Plain imperative title under 72 chars matching repo style (e.g. `Cache compiled regexes to fix matcher CPU regression`). The body must surface the rationale that only exists in the commit bodies: that this fixes a performance regression where Matcher.match recompiled patterns every call (~38% of request CPU, found by profiling), the measured win (p99 4.2ms -> 0.6ms), and the reason the cache is LRU-bounded at 512 (unbounded growth would leak memory for dynamically-built search-filter patterns; 512 sits above the ~380 observed peak). Must link the issue as PERF-204, which appears only in the commit footers. Should read as Summary / Why (the regression + PERF-204) / Key changes (cache, then 512-entry LRU bound) / Risks or notes (the memory-bound reasoning) / Review notes. Must NOT enumerate the two commits. Must NOT contain verification or tooling chatter ('I ran the tests', 'tests pass', 'verified', 'ran the benchmark', test-output dumps). Because there is no PR template and no CONTRIBUTING rule shown, it must NOT invent a Testing or Verification section.",
+      "files": [],
+      "assertions": [
+        {"text": "The body states this fixes a performance regression where the matcher recompiled patterns on every call (rationale present only in the commit bodies, not the diff)"},
+        {"text": "The body surfaces a measured before/after (e.g. ~38% CPU, or p99 4.2ms -> 0.6ms) drawn from the commit bodies"},
+        {"text": "The body explains why the cache is bounded at 512 (memory-leak risk for dynamically-built patterns; ~380 observed peak), drawn from the commit bodies"},
+        {"text": "The body links the issue as PERF-204, which appears only in the commit footers (not the branch name or diff)"},
+        {"text": "The body does NOT enumerate the two commits as a commit list"},
+        {"text": "The body contains no verification or tooling chatter ('I ran', 'tests pass', 'verified', 'ran the benchmark', test output)"},
+        {"text": "The body does NOT invent a Testing/Verification section (the repo has no PR template and no shown CONTRIBUTING rule requiring one)"},
+        {"text": "The title is a single concise line under 72 chars in present/imperative tense (a Conventional Commits prefix is acceptable; the skill allows it even when commit subjects are plain imperative)"}
+      ]
     }
   ]
 }

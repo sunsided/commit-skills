@@ -10,7 +10,7 @@ A pull request description is for humans who are about to spend their attention 
 Two things this skill explicitly does **not** do:
 
 - **Do not list commits.** Reviewers see the commit log in GitHub already. Repeating it in the body wastes screen space and tempts you to describe mechanics instead of intent. Trust the commits to tell their own story; the PR body operates at a level above them.
-- **Do not mention tooling.** No "written with Claude", no "verified with `cargo test`", no test-output dumps, no AI footers. The PR is a piece of professional communication—keep it that way.
+- **Do not mention tooling, or narrate how you verified the change.** No "written with Claude", no "ran the migration", no "ran the tests and they pass", no test-output dumps, no AI footers. *How* you checked the work is process; the PR body is about the change itself, and CI already reports test status. The single exception is when the repo explicitly asks for it: a `Testing` (or `Verification`, `QA`, etc.) heading in the PR template, or a documented expectation in `CONTRIBUTING.md` / a `.github/` policy. Then fill exactly that section with exactly what it asks for, and nothing more—don't volunteer verification notes the repo never requested. Reviewer-facing *manual test steps* ("to reproduce: open two tabs and POST within the same second") are different and welcome; reporting what you personally ran is not.
 
 ## Work order
 
@@ -20,7 +20,8 @@ Two things this skill explicitly does **not** do:
    - `git symbolic-ref refs/remotes/origin/HEAD` → typically `main` or `master`.
    - Ask the user if none of the above resolve cleanly.
 2. **Read the change.**
-   - `git log --no-merges --oneline <base>..HEAD` — the commit narrative.
+   - `git log --no-merges --oneline <base>..HEAD` — the commit narrative at a glance.
+   - `git log --no-merges <base>..HEAD` — the **full commit messages, bodies and all**. This is the highest-value source and the one most easily skipped: a careful author has already written the *why*, the before→after, the findings, and the issue links into the commit bodies. Mine them for the Summary, Why-now, and Risks sections rather than reverse-engineering intent from the diff. When a body explains a non-obvious decision, the PR is where that reasoning earns a wider audience—lift it up, don't make the reviewer go spelunking through `git log` to find it.
    - `git diff --stat <base>..HEAD` — what's touched, at what scale.
    - `git diff <base>..HEAD` — the actual change. Skim, don't read every line; focus on entry points and anything marked as breaking.
 3. **Detect the PR template.** Look for `.github/pull_request_template.md`, `.github/PULL_REQUEST_TEMPLATE/`, `docs/PULL_REQUEST_TEMPLATE.md`. If present, structure the body to match its headings. Do not invent sections it doesn't have.
@@ -46,7 +47,7 @@ Optional sections (only if the template asks, or the change genuinely needs them
 ## What stays out
 
 - No commit list (`* abc1234 Add foo`). The "Files changed" tab has this.
-- No tooling chatter: no test output, no "I ran `cargo test`", no "Claude wrote this", no co-authored-by lines unless the user has explicitly asked.
+- No tooling or verification chatter: no test output, no "I ran `cargo test`", no "ran the migration locally", no "Claude wrote this", no co-authored-by lines unless the user has explicitly asked. Exception: a `Testing`/`Verification` section the PR template or `CONTRIBUTING.md` explicitly requires—fill that, and only that.
 - No apologies or hedges ("sorry, this is a big one"). State scale neutrally if you need to ("Touches 14 files; most are mechanical call-site updates for the new signature.").
 - No forward-looking promises ("will follow up with cleanup"). Either file an issue and link to it, or omit.
 - No re-statement of every diff hunk in prose. Trust the diff.

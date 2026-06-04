@@ -165,8 +165,11 @@ retry logic" is concrete; "code cleanup" is not.>
 
 ## Review notes
 
-<Reassurance about behavioral equivalence: which tests pass, which
-public APIs are unchanged, where to look first.>
+<Reassurance about behavioral equivalence: which public APIs are
+unchanged, what a reviewer should diff to convince themselves the
+behavior is identical, where to look first. State that existing
+coverage exercises the changed paths if true—but don't narrate that
+*you* ran it; CI reports that.>
 ```
 
 ## When the template file dictates the structure
