@@ -30,7 +30,7 @@ Two things this skill explicitly does **not** do:
 6. **Draft the body.** See `references/body-structure.md`. Lead with what changed and why; close with review instructions.
 7. **Decide on output.**
    - **Default:** emit the title + body as text, ready to paste.
-   - **If the user asks to open it:** run `gh pr create --title "…" --body "$(cat <<'EOF' … EOF)"`. Push the branch first if not already pushed. Confirm before pushing.
+   - **If the user asks to open it:** create it as a **draft** unless the user says otherwise—`gh pr create --draft --title "…" --body "$(cat <<'EOF' … EOF)"`. Push the branch first if not already pushed. Confirm before pushing. Drop `--draft` only when the user explicitly asks for a ready-for-review PR.
 
 ## What goes in the body
 
@@ -51,6 +51,7 @@ Optional sections (only if the template asks, or the change genuinely needs them
 - No apologies or hedges ("sorry, this is a big one"). State scale neutrally if you need to ("Touches 14 files; most are mechanical call-site updates for the new signature.").
 - No forward-looking promises ("will follow up with cleanup"). Either file an issue and link to it, or omit.
 - No re-statement of every diff hunk in prose. Trust the diff.
+- No hard line wraps in the body. GitHub renders Markdown with soft wrapping, so hard-wrapping prose to a fixed column (72/80/etc.) inserts visible mid-sentence breaks that look ragged on the rendered PR. Write each paragraph as a single unbroken line and one bullet per line; let GitHub reflow. Only break lines where the break is semantic—between list items, before a heading, between paragraphs.
 
 ## Title
 
@@ -66,11 +67,12 @@ Don't pack the body into the title. ≤72 chars; the issue ID goes in the body i
 
 ## Opening the PR
 
-If the user wants you to open it:
+If the user wants you to open it, open it as a **draft** by default:
 
 ```bash
 git push -u origin HEAD                  # confirm with user first
 gh pr create \
+  --draft \
   --base <base-branch> \
   --title "<title>" \
   --body "$(cat <<'EOF'
@@ -79,7 +81,11 @@ EOF
 )"
 ```
 
+Drop `--draft` only when the user explicitly asks for a ready-for-review PR. To take an existing draft out of draft, `gh pr ready`.
+
 If a PR already exists on this branch, prefer `gh pr edit` over creating a new one. If the user wants to update an open PR's description, `gh pr edit --body …` replaces it entirely—make sure to preserve sections they wrote.
+
+**Tooling:** if the GitHub MCP server is available, prefer it over `gh` for creating and editing PRs (`create_pull_request` takes a `draft: true` field, `update_pull_request` for edits)—it passes the body through as a string with no shell heredoc, which avoids the accidental line-wrapping and quoting hazards of the CLI path. Fall back to `gh` when the MCP server isn't connected.
 
 ## Reference files
 
