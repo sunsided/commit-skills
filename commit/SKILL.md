@@ -1,6 +1,8 @@
 ---
 name: commit
 description: Use whenever the user wants to commit changes, split a working tree into commits, write a commit message, or says anything like "commit this", "make commits for these changes", "write a commit message", or "/commit". Detects the repository's commit style (Conventional Commits, plain imperative, etc.), groups unstaged + staged changes into semantically-coherent commits, writes a concise subject plus an extended body covering rationale, before→after, findings, and issue links, then stages and commits each group after confirming the plan with the user. Trigger even when the user does not explicitly say "skill"—any request to commit, stage, or describe local changes counts.
+metadata:
+  version: "1.0.0"
 ---
 
 # commit
