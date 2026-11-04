@@ -1,6 +1,8 @@
 ---
 name: address-review
 description: Use this skill whenever the user wants to act on pull-request review feedback: "fix the review comments", "address the PR feedback", "go through the reviewer's comments", "respond to the review", "handle the requested changes on my PR", "deal with the review threads", "reply to the comments on the PR", "the reviewer left some comments, sort them out", or "/address-review". This is the skill for *answering* a review, not writing one. It reads the review comments off the current branch's PR via the GitHub API (or comments the user pastes in), triages each as a defect, suggestion, opinion, or question, fixes what's valid as repo-style commits, and posts a reply in each thread, citing the fixing commit's short SHA as a bare hash so GitHub auto-links it, pushing before replying, and never auto-resolving the thread. Always reach for this skill rather than hand-rolling it whenever a request involves reviewer comments, code-review feedback, requested/change requests, PR review threads, or "what the reviewer asked for", even when the user names neither the skill nor a PR number. The in-thread reply mechanics and SHA auto-linking are easy to get wrong by hand, so prefer this skill over doing it inline.
+metadata:
+  version: "1.0.0"
 ---
 
 # address-review
