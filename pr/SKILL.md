@@ -1,6 +1,8 @@
 ---
 name: pr
 description: Use whenever the user wants to open a pull request, draft a PR description, or says anything like "open a PR", "write a PR description", "create a pull request", "draft the PR body", or "/pr". Analyzes the diff between the current branch and its base, detects the repository's PR template if present, and produces a reviewer-oriented title plus body that explains *what the change does and why*—not a commit-by-commit log. Includes review instructions that guide a human through the change in the order they should read it. Defaults to emitting the text for the user to paste; offers to invoke `gh pr create` if the user wants. Trigger on any phrasing that involves describing or opening a PR, even if the user doesn't say "skill".
+metadata:
+  version: "1.0.0"
 ---
 
 # pr
