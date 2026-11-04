@@ -12,10 +12,11 @@ Turns a dirty working tree into a clean series of well-described commits. The ou
 Work in this order:
 
 1. **Read the working tree.** Run `git status --short` and `git diff` (and `git diff --staged` if anything is already staged). Read `git log --oneline -30` to see how this repo phrases commits. Note the current branch name—it often carries the issue ID.
+   - **On the default/integration branch** (`main`, `master`, `develop`) in a repo that works through PRs (merged PRs or `Merge pull request` commits in history)? Propose a new branch as part of the plan, named per `references/branching.md`. If history shows direct commits to that branch are the norm, commit in place and don't propose one.
 2. **Detect the commit style.** See `references/styles.md`. CONTRIBUTING / .gitmessage / commit template > observed history > Conventional Commits fallback.
 3. **Group changes into logical commits.** See `references/splitting.md`. Group by *intent*, not by directory.
 4. **Find issue links.** See `references/issue-links.md`. Only escalate to MCPs after confirming with the user.
-5. **Draft the plan.** Show the user the commits you intend to make: ordered list of `subject` lines with the files in each group. Keep it skimmable.
+5. **Draft the plan.** Show the user the commits you intend to make: ordered list of `subject` lines with the files in each group, plus the branch you'd create (if any). Keep it skimmable.
 6. **Draft the messages.** Subject + body per commit, in the detected style. See `references/messages.md`.
 7. **Confirm, then execute.** Stage and commit each group. Stop and ask if anything looks ambiguous; do not silently fold orphan files into the last commit.
 
@@ -36,6 +37,7 @@ Work in this order:
 After the user approves the plan:
 
 ```bash
+git switch -c <branch>                   # only if the plan proposed one; see references/branching.md
 git reset                                # clear stage if needed
 git add <files for commit 1>             # explicit file list; never `git add -A`
 git commit -m "<subject>" -m "<body>"    # or HEREDOC for multi-paragraph bodies
@@ -70,3 +72,4 @@ When all commits are made, run `git status` and `git log --oneline <base>..HEAD`
 - `references/splitting.md` — heuristics for grouping changes by intent.
 - `references/issue-links.md` — where issue IDs live and how to surface them.
 - `references/messages.md` — subject + body templates with worked examples.
+- `references/branching.md` — detect the repo's branch naming; default to `feature/<slug>`, never ad-hoc `fix/`/`chore/`/`docs/`.

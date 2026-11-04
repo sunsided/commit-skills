@@ -102,7 +102,7 @@ If a PR already exists on this branch, prefer `gh pr edit` over creating a new o
 
 If the change is uncommitted, or committed directly on the base branch with nothing on a feature branch, the PR can't be opened as-is. Draft the title + body from the working-tree diff (`git diff` / `git diff --staged`) as usual, show them, then ask with **one `AskUserQuestion` call**:
 
-- **Question:** "This change isn't on a branch yet. Set it up and open the PR?" Name the branch you'd create (derived from the title, e.g. `pr-skill-ask-draft`, or a ticket-prefixed name if the repo uses those) and say that it commits, pushes, and opens the PR.
+- **Question:** "This change isn't on a branch yet. Set it up and open the PR?" Name the branch you'd create, following `references/branching.md`: the repo's own pattern if one is evident, otherwise `feature/<slug>` (e.g. `feature/pr-skill-ask-draft`)—never an ad-hoc `fix/`, `chore/`, `bug/`, or `docs/` prefix. In a Git Flow repo, branch from and target `develop`. Say that it commits, pushes, and opens the PR.
 - **Options, in this order:**
   1. `Branch, commit, push, open draft (Recommended)`
   2. `Branch, commit, push, open ready for review`
@@ -118,3 +118,4 @@ On a pick: create the branch from the current state (`git switch -c <branch>`; i
 - `references/body-structure.md` — section-by-section templates with worked examples.
 - `references/review-guidance.md` — how to write the "review instructions" section.
 - `references/pr-templates.md` — handling repo `pull_request_template.md` files.
+- `references/branching.md` — detect the repo's branch naming; default to `feature/<slug>`.
