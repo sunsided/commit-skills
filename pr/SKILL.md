@@ -30,7 +30,8 @@ Two things this skill explicitly does **not** do:
 6. **Draft the body.** See `references/body-structure.md`. Lead with what changed and why; close with review instructions.
 7. **Decide on output.**
    - **Default:** emit the title + body as text, ready to paste.
-   - **If the user asks to open it:** create it as a **draft** unless the user says otherwise—`gh pr create --draft --title "…" --body "$(cat <<'EOF' … EOF)"`. Push the branch first if not already pushed. Confirm before pushing. Drop `--draft` only when the user explicitly asks for a ready-for-review PR.
+   - **If the user asks to open it:** show the title + body, then confirm via the `AskUserQuestion` tool (see "Opening the PR"), not a free-text question. Draft is the default; push the branch first if not already pushed—the confirmation covers the push.
+   - **If the work isn't on a branch yet** (uncommitted changes, or commits sitting on the base branch itself): still show the title + body, then offer to set it up via `AskUserQuestion` (see "Work not on a branch yet")—never end on a plain-text "next I'd create a branch…".
 
 ## What goes in the body
 
@@ -67,10 +68,20 @@ Don't pack the body into the title. ≤72 chars; the issue ID goes in the body i
 
 ## Opening the PR
 
-If the user wants you to open it, open it as a **draft** by default:
+If the user wants you to open it, show the final title + body, then ask with **one `AskUserQuestion` call** (never a plain-text "should I open this as a draft?"):
+
+- **Question:** "Open this PR?" (mention the push if the branch isn't on the remote yet—the answer authorizes it).
+- **Options, in this order:**
+  1. `Open as draft (Recommended)` — the default.
+  2. `Open as ready for review`.
+- The tool adds a free-text "Other" option automatically; treat a reply there as edit instructions for the title/body (or base branch). Apply them, show the revised text, and ask again.
+
+Skip the question only when the user already said which one in their request ("open a draft PR", "open it ready for review")—then just do it. If `AskUserQuestion` isn't available, ask the same thing in plain text.
+
+Then open it:
 
 ```bash
-git push -u origin HEAD                  # confirm with user first
+git push -u origin HEAD                  # only after the confirmation above
 gh pr create \
   --draft \
   --base <base-branch> \
@@ -81,9 +92,22 @@ EOF
 )"
 ```
 
-Drop `--draft` only when the user explicitly asks for a ready-for-review PR. To take an existing draft out of draft, `gh pr ready`.
+Drop `--draft` only when the user picks (or explicitly asked for) a ready-for-review PR. To take an existing draft out of draft, `gh pr ready`.
 
 If a PR already exists on this branch, prefer `gh pr edit` over creating a new one. If the user wants to update an open PR's description, `gh pr edit --body …` replaces it entirely—make sure to preserve sections they wrote.
+
+### Work not on a branch yet
+
+If the change is uncommitted, or committed directly on the base branch with nothing on a feature branch, the PR can't be opened as-is. Draft the title + body from the working-tree diff (`git diff` / `git diff --staged`) as usual, show them, then ask with **one `AskUserQuestion` call**:
+
+- **Question:** "This change isn't on a branch yet. Set it up and open the PR?" Name the branch you'd create (derived from the title, e.g. `pr-skill-ask-draft`, or a ticket-prefixed name if the repo uses those) and say that it commits, pushes, and opens the PR.
+- **Options, in this order:**
+  1. `Branch, commit, push, open draft (Recommended)`
+  2. `Branch, commit, push, open ready for review`
+  3. `Branch and commit only` — stop before pushing.
+- "Other" (added automatically) is the user's way to intervene: a different branch name, a different commit split, edits to the PR text, or "stop here". Apply it and ask again where needed.
+
+On a pick: create the branch from the current state (`git switch -c <branch>`; if the commits are already on the base branch, create the branch at `HEAD` and leave resetting the base branch to the user—never reset it yourself). Then commit following the `commit` skill's conventions (repo style, Why-first body), push, and open the PR. The answer covers all of these steps; don't ask again for each one.
 
 **Tooling:** if the GitHub MCP server is available, prefer it over `gh` for creating and editing PRs (`create_pull_request` takes a `draft: true` field, `update_pull_request` for edits)—it passes the body through as a string with no shell heredoc, which avoids the accidental line-wrapping and quoting hazards of the CLI path. Fall back to `gh` when the MCP server isn't connected.
 
