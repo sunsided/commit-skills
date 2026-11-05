@@ -2,7 +2,7 @@
 name: commit
 description: Use whenever the user wants to commit changes, split a working tree into commits, write a commit message, or says anything like "commit this", "make commits for these changes", "write a commit message", or "/commit". Detects the repository's commit style (Conventional Commits, plain imperative, etc.), groups unstaged + staged changes into semantically-coherent commits, writes a concise subject plus an extended body covering rationale, before→after, findings, and issue links, then stages and commits each group after confirming the plan with the user. Trigger even when the user does not explicitly say "skill"—any request to commit, stage, or describe local changes counts.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # commit
@@ -15,7 +15,7 @@ Work in this order:
    - **On the default/integration branch** (`main`, `master`, `develop`) in a repo that works through PRs (merged PRs or `Merge pull request` commits in history)? Propose a new branch as part of the plan, named per `references/branching.md`. If history shows direct commits to that branch are the norm, commit in place and don't propose one.
 2. **Detect the commit style.** See `references/styles.md`. CONTRIBUTING / .gitmessage / commit template > observed history > Conventional Commits fallback.
 3. **Group changes into logical commits.** See `references/splitting.md`. Group by *intent*, not by directory.
-4. **Find issue links.** See `references/issue-links.md`. Only escalate to MCPs after confirming with the user.
+4. **Find issue links.** See `references/issue-links.md`. Only escalate to MCPs after confirming with the user. Ticket IDs go in a `Refs: MED-481` footer, **never as a subject prefix**—not even if history or PR titles are ticket-prefixed. The subject is reserved for what changed.
 5. **Draft the plan.** Show the user the commits you intend to make: ordered list of `subject` lines with the files in each group, plus the branch you'd create (if any). Keep it skimmable.
 6. **Draft the messages.** Subject + body per commit, in the detected style. See `references/messages.md`.
 7. **Confirm, then execute.** Stage and commit each group. Stop and ask if anything looks ambiguous; do not silently fold orphan files into the last commit.

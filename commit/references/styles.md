@@ -42,13 +42,17 @@ A capitalized verb at the start, no prefix, no scope. The classic "what would th
 
 `:sparkles: add session booking endpoint`. Rare but unmistakable in history. Match the emoji vocabulary already in use.
 
-### Ticket-prefixed
+### Ticket IDs never go in the subject
 
-`MED-481: Add session booking endpoint` or `[MED-481] Add session booking endpoint`. Common in repos backed by Jira or Linear without Conventional Commits. The ticket prefix replaces the scope.
+`MED-481: Add session booking endpoint` / `[MED-481] Add session booking endpoint` is **not** a style to copy. A ticket ID burns subject characters on something that says nothing about the change, and it pushes the actual intent out of `git log --oneline`. Ticket IDs belong in a `Refs:` footer in the body (see `issue-links.md`); the subject stays for what changed.
+
+- Ticket-prefixed subjects in history are **not** enough to prefix new commits. Classify the rest of the subject (plain imperative, Conventional, …) and follow *that*; put the ticket in the footer.
+- A PR title shape (e.g. the `pr` skill's `MED-481: …` title example) says nothing about commit subjects. Don't carry it over.
+- Only exception: an explicit policy file (CONTRIBUTING, commitlint rule, commit-msg hook) or the user explicitly requires the ID in the subject. Then follow it, and still add the `Refs:` footer.
 
 ### Hybrid (Conventional + ticket footer)
 
-Subject is Conventional Commits, ticket goes in a `Refs:` or `Closes:` footer. This is the most common style in well-maintained repos.
+Subject is Conventional Commits, ticket goes in a `Refs:` or `Closes:` footer. This is the most common style in well-maintained repos, and the shape every style should take when a ticket exists: subject in house style, ticket in the footer.
 
 ## Subject rules that apply across styles
 
@@ -67,7 +71,7 @@ If history is plain imperative but the user asks for Conventional Commits ("comm
 |---|---|
 | `feat(api): expose /health endpoint` | Conventional Commits, scope=api |
 | `Add /health endpoint` | Plain imperative |
-| `MED-481 Add /health endpoint` | Ticket-prefixed |
+| `MED-481 Add /health endpoint` | Plain imperative (ticket prefix ignored; write `Add /health endpoint` + `Refs: MED-481` footer) |
 | `chore: bump axios to 1.7.0` | Conventional Commits, no scope |
 | `:bug: fix race in session lock` | Gitmoji |
 

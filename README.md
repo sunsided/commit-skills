@@ -88,7 +88,7 @@ The skills also respond to slash commands: `/commit`, `/pr`, and `/address-revie
 The skills follow the same shape:
 
 1. **Look at the actual state.** `git status`, `git log`, `git diff`, branch name—nothing is guessed. `address-review` adds the PR's review comments (`gh api` across inline threads, review summaries, and conversation comments).
-2. **Detect the repo's style.** Conventional Commits vs. plain imperative vs. ticket-prefixed; for PRs, the `.github/pull_request_template.md` if present. `address-review` reuses the same commit-style detection for its fix commits.
+2. **Detect the repo's style.** Conventional Commits vs. plain imperative vs. gitmoji (ticket IDs always go in a `Refs:` footer, never the subject); for PRs, the `.github/pull_request_template.md` if present. `address-review` reuses the same commit-style detection for its fix commits.
 3. **Apply judgment.** Group commits by intent (a Taskfile alongside a benchmark is one commit; alongside an unrelated API change it's two). For PRs, lead with what a reviewer needs to know. For reviews, triage each comment into fix-and-reply vs. reply-only—and never silently drop one.
 4. **Confirm, then execute.** The `commit` skill stages and commits per group. The `pr` skill emits the title + body as text and optionally runs `gh pr create`. The `address-review` skill shows a plan, then (on your go-ahead) pushes and posts in-thread replies citing the fix SHAs—push first, so the bare SHA auto-links.
 

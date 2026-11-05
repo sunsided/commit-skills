@@ -36,13 +36,14 @@ Match the format the repo already uses (see `git log`). Common ones:
 | `Refs: MED-481` | Generic—works for Jira, Linear, YouTrack. Default if unsure. |
 | `Closes #123` | GitHub/GitLab; auto-closes the issue on merge. Only if the commit actually closes it. |
 | `Fixes #123` | GitHub/GitLab; same as Closes but more semantic for bugs. |
-| `MED-481` (bare) | Some teams put it in the subject prefix; only if history does. |
+| `MED-481: …` (subject prefix) | **Don't.** Not even if history does. Only when a policy file or the user explicitly requires it. |
 | `Co-authored-by: …` | Do **not** add unless explicitly requested. |
 
 ## When to put the link where
 
-- **Subject:** only if the repo style already does (e.g. `MED-481: Add booking endpoint`). Don't add it just because it exists.
-- **Footer (last paragraph of body):** the default location. One line, one link.
+- **Footer (last paragraph of body):** always. One line: `Refs: MED-481`. A commit with a ticket gets a body, even if it's otherwise trivial—the footer is the body.
+- **Subject:** never by default. The subject is for what changed; a `MED-481:` prefix carries no information about the change. Ticket-prefixed subjects in history or PR titles don't change this—only an explicit policy file (CONTRIBUTING, commitlint, commit-msg hook) or an explicit user request does, and then the `Refs:` footer is still added.
+- **Only on commits that belong to the ticket.** A drive-by dep bump on a `MED-842` branch doesn't get `Refs: MED-842`.
 - **Multiple issues:** stack them: `Refs: MED-481, MED-482`. Don't make up a single ticket that "covers" them.
 
 ## When there's no ticket
