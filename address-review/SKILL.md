@@ -1,8 +1,9 @@
 ---
 name: address-review
-description: Use this skill whenever the user wants to act on pull-request review feedback: "fix the review comments", "address the PR feedback", "go through the reviewer's comments", "respond to the review", "handle the requested changes on my PR", "deal with the review threads", "reply to the comments on the PR", "the reviewer left some comments, sort them out", or "/address-review". This is the skill for *answering* a review, not writing one. It reads the review comments off the current branch's PR via the GitHub API (or comments the user pastes in), triages each as a defect, suggestion, opinion, or question, fixes what's valid as repo-style commits, and posts a reply in each thread, citing the fixing commit's short SHA as a bare hash so GitHub auto-links it, pushing before replying, and never auto-resolving the thread. Always reach for this skill rather than hand-rolling it whenever a request involves reviewer comments, code-review feedback, requested/change requests, PR review threads, or "what the reviewer asked for", even when the user names neither the skill nor a PR number. The in-thread reply mechanics and SHA auto-linking are easy to get wrong by hand, so prefer this skill over doing it inline.
+description: >-
+  Use this skill whenever the user wants to act on pull-request review feedback: "fix the review comments", "address the PR feedback", "go through the reviewer's comments", "respond to the review", "handle the requested changes on my PR", "reply to the comments on the PR", or "/address-review". This skill *answers* a review; it does not write one. It reads the review comments off the current branch's PR via the GitHub API (or comments the user pastes in), triages each as a defect, suggestion, opinion, or question, fixes what's valid as repo-style commits, pushes, then replies in each thread citing the fixing commit's short SHA as a bare hash so GitHub auto-links it, never auto-resolving the thread. Reach for it whenever a request involves reviewer comments, code-review feedback, change requests, or PR review threads, even when the user names neither the skill nor a PR number. The reply mechanics and SHA auto-linking are easy to get wrong by hand.
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
 ---
 
 # address-review
