@@ -1,3 +1,5 @@
 desc-opt/
 scratch/
 
+dist/
+.task/

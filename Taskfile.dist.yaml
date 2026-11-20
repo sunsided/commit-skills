@@ -1,0 +1,49 @@
+version: '3'
+
+vars:
+  DIST: dist
+  # Every top-level directory with a SKILL.md is a skill.
+  SKILLS:
+    sh: for f in */SKILL.md; do dirname "$f"; done
+
+tasks:
+  default:
+    cmds:
+      - task --list --sort=none
+    silent: true
+
+  build:
+    desc: Package each skill into {{.DIST}}/<name>.skill
+    preconditions:
+      - sh: command -v zip
+        msg: "zip not found — install it with your package manager (e.g. apt install zip)"
+    cmds:
+      - mkdir -p {{.DIST}}
+      - for: { var: SKILLS }
+        task: build:skill
+        vars: { SKILL: '{{.ITEM}}' }
+
+  build:skill:
+    internal: true
+    # Per-skill label so each skill gets its own up-to-date checksum.
+    label: 'build:skill:{{.SKILL}}'
+    sources:
+      - '{{.SKILL}}/**/*'
+    generates:
+      - '{{.DIST}}/{{.SKILL}}.skill'
+    cmds:
+      # zip appends to an existing archive, so start fresh to drop removed files.
+      - rm -f {{.DIST}}/{{.SKILL}}.skill
+      # Same layout as skill-creator's package_skill.py: skill folder at the archive root,
+      # eval and benchmark data left out.
+      - >-
+        zip -qr {{.DIST}}/{{.SKILL}}.skill {{.SKILL}}
+        -x '{{.SKILL}}/evals/*' '{{.SKILL}}/benchmark.*'
+        '*/__pycache__/*' '*.pyc' '*.DS_Store'
+      - echo "packaged {{.DIST}}/{{.SKILL}}.skill"
+    silent: true
+
+  clean:
+    desc: Remove packaged skills
+    cmds:
+      - rm -rf {{.DIST}}
