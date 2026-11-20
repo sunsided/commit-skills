@@ -17,6 +17,8 @@ tasks:
     preconditions:
       - sh: command -v zip
         msg: "zip not found — install it with your package manager (e.g. apt install zip)"
+      - sh: command -v yq
+        msg: "yq not found — install mikefarah/yq from https://github.com/mikefarah/yq"
     cmds:
       - mkdir -p {{.DIST}}
       - for: { var: SKILLS }
@@ -32,6 +34,12 @@ tasks:
     generates:
       - '{{.DIST}}/{{.SKILL}}.skill'
     cmds:
+      # Claude rejects bundles whose SKILL.md frontmatter is invalid YAML or has a description over 1024 chars.
+      - |
+        len=$(yq --front-matter=extract '.description | length' {{.SKILL}}/SKILL.md) || exit 1
+        if [ "$len" -eq 0 ] || [ "$len" -gt 1024 ]; then
+          echo "{{.SKILL}}/SKILL.md: description is $len chars, must be 1-1024" >&2; exit 1
+        fi
       # zip appends to an existing archive, so start fresh to drop removed files.
       - rm -f {{.DIST}}/{{.SKILL}}.skill
       # Same layout as skill-creator's package_skill.py: skill folder at the archive root,
