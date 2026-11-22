@@ -3,7 +3,7 @@ name: address-review
 description: >-
   Use this skill whenever the user wants to act on pull-request review feedback: "fix the review comments", "address the PR feedback", "go through the reviewer's comments", "respond to the review", "handle the requested changes on my PR", "reply to the comments on the PR", or "/address-review". This skill *answers* a review; it does not write one. It reads the review comments off the current branch's PR via the GitHub API (or comments the user pastes in), triages each as a defect, suggestion, opinion, or question, fixes what's valid as repo-style commits, pushes, then replies in each thread citing the fixing commit's short SHA as a bare hash so GitHub auto-links it, never auto-resolving the thread. Reach for it whenever a request involves reviewer comments, code-review feedback, change requests, or PR review threads, even when the user names neither the skill nor a PR number. The reply mechanics and SHA auto-linking are easy to get wrong by hand.
 metadata:
-  version: "1.0.1"
+  version: "1.1.0"
 ---
 
 # address-review
@@ -40,6 +40,17 @@ Two things this skill explicitly does **not** do:
 3. **Make the fixes, as real commits.** Edit the code for everything in the fix-and-reply bucket. Commit the work matching the repo's existing commit style (Conventional Commits vs. plain imperative, Why-first body when the reason isn't obvious — the same detection the `commit` skill uses). Group related fixes into coherent commits; one commit can address several nearby comments, and you'll cite that one SHA in each of their replies. Capture each short SHA with `git rev-parse --short HEAD`.
 
 4. **Draft the plan and confirm before anything posts.** Present a compact table: each comment, your verdict (fix / reply-only), the one-line reply you'll post, and the SHA if fixed. Posting replies and pushing are outward-facing — wait for the user's go-ahead. This is also their chance to overrule a verdict.
+
+   After the table, ask with **one `AskUserQuestion` call**, never a plain-text "should I push and post these?":
+
+   - **Question:** "Push the branch and post these N replies?" (use the real count; say "post these replies" if nothing needs a push).
+   - **Options, in this order:**
+     1. `Push and post replies (Recommended)` — the usual answer.
+     2. `Push only` — push the fixes, hand back the reply text instead of posting it.
+     3. `Neither` — stop; leave the commits local and hand back the reply text.
+   - The tool adds a free-text "Other" option automatically; treat a reply there as edits to verdicts or reply wording. Apply them, show the revised table, and ask again.
+
+   Skip the question only when the user already authorized pushing and posting in their request. If `AskUserQuestion` isn't available, ask the same thing in plain text.
 
 5. **Push, then reply — in that order.** A bare SHA only becomes a clickable commit link once that commit exists on GitHub, so the branch must be pushed *before* the replies reference it. Push (`git push`), then post each reply to its thread. See `references/github-api.md` for the reply endpoints.
 

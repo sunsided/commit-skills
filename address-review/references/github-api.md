@@ -115,7 +115,7 @@ gh api repos/{owner}/{repo}/pulls/{pr}/comments/{root}/replies -F body=@reply.tx
 A short SHA only renders as a clickable commit link once GitHub has that commit. So the order is non-negotiable:
 
 1. Make every fix and commit locally.
-2. `git push` the branch (confirm with the user first — it's outward-facing).
+2. `git push` the branch (confirm via the `AskUserQuestion` step in SKILL.md step 4; it's outward-facing).
 3. *Then* post the replies that cite those SHAs.
 
 Reply before push and the reviewer gets a bare string that links nowhere.
